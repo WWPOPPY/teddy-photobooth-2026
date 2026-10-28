@@ -159,19 +159,15 @@
                 </div>
             </div>
 
-            <!-- Clean Action Bar -->
+            <!-- Mode Navigation and Actions -->
             <div class="flex items-center gap-2">
-                <!-- Printer Settings Modal Trigger -->
-                <button onclick="openPrinterModal()" class="px-3.5 py-2 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-semibold transition flex items-center gap-2 border border-studio-border">
-                    <span id="headerStatusDot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    <i class="fa-solid fa-print text-studio-pinkDark"></i>
-                    <span id="headerPrinterText">ตั้งค่าเครื่องพิมพ์ 80mm</span>
+                <button id="boothTab" onclick="setAppMode('booth')" aria-selected="true" class="px-3.5 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold transition flex items-center gap-2 border border-studio-ink">
+                    <i class="fa-solid fa-camera"></i>
+                    <span>หน้าตู้ถ่ายรูป</span>
                 </button>
-
-                <!-- Prompt Modal Trigger -->
-                <button onclick="openPromptModal()" class="px-3 py-2 rounded-xl bg-white hover:bg-stone-50 text-studio-muted hover:text-studio-ink text-xs font-medium transition flex items-center gap-1.5 border border-studio-border" title="ดู Prompt สำหรับสร้างเว็บนี้">
-                    <i class="fa-solid fa-wand-magic-sparkles text-studio-gold"></i>
-                    <span class="hidden sm:inline">Prompt</span>
+                <button id="adminTab" onclick="setAppMode('admin')" aria-selected="false" class="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-studio-muted text-xs font-semibold transition flex items-center gap-2 border border-studio-border">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>ตั้งค่าหลังบ้าน</span>
                 </button>
 
                 <!-- Fullscreen Kiosk Trigger -->
@@ -186,8 +182,8 @@
     <!-- Non-blocking Toast Container -->
     <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
-    <!-- Main Workspace (Clean 2-Column Studio Layout) -->
-    <main class="no-print flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <!-- Booth Mode: camera, countdown, receipt preview, and printing -->
+    <main id="boothModeView" class="no-print flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
         <!-- LEFT COLUMN: Camera Stage & Clean Customization (7 Cols) -->
         <section class="lg:col-span-7 flex flex-col gap-5">
@@ -197,26 +193,9 @@
 
                 <!-- Minimal Camera Header Bar -->
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-3.5">
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 text-xs font-semibold text-studio-muted">
                         <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                        <select id="cameraSelect" onchange="switchCamera(this.value)" class="text-xs font-medium bg-studio-soft border border-studio-border rounded-xl px-3 py-1.5 text-studio-ink focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
-                            <option value="">กำลังค้นหากล้องโน้ตบุ๊ก...</option>
-                        </select>
-                        <button onclick="initCamera()" title="รีเฟรชกล้อง" class="w-8 h-8 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-muted hover:text-studio-ink transition flex items-center justify-center border border-studio-border">
-                            <i class="fa-solid fa-rotate text-xs"></i>
-                        </button>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <button onclick="toggleMirror()" id="mirrorBtn" class="px-3 py-1.5 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-medium transition flex items-center gap-1.5 border border-studio-border">
-                            <i class="fa-solid fa-arrows-left-right text-studio-pinkDark"></i>
-                            <span>กระจก: เปิด</span>
-                        </button>
-                        <label class="cursor-pointer px-3 py-1.5 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-medium transition flex items-center gap-1.5 border border-studio-border">
-                            <i class="fa-regular fa-image text-studio-pinkDark"></i>
-                            <span>อัปโหลดรูป</span>
-                            <input type="file" id="uploadInput" accept="image/*" multiple class="hidden" onchange="handleImageUpload(event)">
-                        </label>
+                        <span>PHOTO BOOTH</span>
                     </div>
                 </div>
 
@@ -331,99 +310,6 @@
                 </div>
             </div>
 
-            <!-- 2. MINIMALIST STUDIO CUSTOMIZATION CARD -->
-            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border space-y-5">
-                <div class="flex items-center justify-between border-b border-studio-border/70 pb-3">
-                    <h2 class="text-sm font-bold text-studio-ink flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-studio-pinkDark"></i>
-                        <span>โทนภาพเนียนใส & ตกแต่งใบเสร็จ (Smooth Studio Controls)</span>
-                    </h2>
-                    <button onclick="resetSliders()" class="text-xs text-studio-pinkDark hover:underline font-medium">
-                        รีเซ็ตค่าเริ่มต้น
-                    </button>
-                </div>
-
-                <!-- Section A: Smooth Photo Tone (NO DOTS / NO GRAIN) -->
-                <div>
-                    <label class="block text-xs font-semibold text-studio-muted mb-2">
-                        1. โทนภาพ (ไร้เม็ดจุด • คมชัดเนียนใสสำหรับเครื่องพิมพ์ 80mm)
-                    </label>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        <button onclick="setFilterMode('smooth-bw')" id="filter-smooth-bw" class="filter-btn p-2.5 rounded-2xl border-2 border-studio-ink bg-studio-ink text-white text-xs font-semibold text-center transition">
-                            ✨ ขาวดำเนียนใส<br><span class="text-[10px] font-normal opacity-80">ไร้เม็ดจุด (แนะนำ)</span>
-                        </button>
-                        <button onclick="setFilterMode('soft-portrait')" id="filter-soft-portrait" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
-                            🌸 พอร์ตเทรตผิวใส<br><span class="text-[10px] font-normal text-studio-muted">หน้าสว่างเนียนนุ่ม</span>
-                        </button>
-                        <button onclick="setFilterMode('classic-film')" id="filter-classic-film" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
-                            🎞️ ฟิล์มโมโนโครม<br><span class="text-[10px] font-normal text-studio-muted">คมเข้มมีมิติ</span>
-                        </button>
-                        <button onclick="setFilterMode('color')" id="filter-color" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
-                            🎨 ภาพสีธรรมชาติ<br><span class="text-[10px] font-normal text-studio-muted">สำหรับเซฟไฟล์ PNG</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Section B: Clean Brightness & Contrast Sliders -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-studio-soft/70 p-3.5 rounded-2xl border border-studio-border/80">
-                    <div>
-                        <div class="flex justify-between text-xs font-medium text-studio-ink mb-1">
-                            <span>ความสว่างใบหน้า (Brightness)</span>
-                            <span id="brightnessVal" class="font-mono text-studio-pinkDark">+10</span>
-                        </div>
-                        <input type="range" id="brightnessSlider" min="-40" max="60" value="10" oninput="updateFilterParams()" class="w-full accent-studio-pinkDark cursor-pointer h-1.5 bg-stone-200 rounded-lg">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs font-medium text-studio-ink mb-1">
-                            <span>มิติความชัด (Contrast)</span>
-                            <span id="contrastVal" class="font-mono text-studio-pinkDark">+8</span>
-                        </div>
-                        <input type="range" id="contrastSlider" min="-30" max="50" value="8" oninput="updateFilterParams()" class="w-full accent-studio-pinkDark cursor-pointer h-1.5 bg-stone-200 rounded-lg">
-                    </div>
-                </div>
-
-                <!-- Section C: Receipt Theme & Custom Messages -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                    <div>
-                        <label class="block text-xs font-semibold text-studio-muted mb-2">
-                            2. ลายกรอบใบเสร็จ (Receipt Theme)
-                        </label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="setReceiptTheme('graduation')" id="theme-graduation" class="theme-btn p-2 rounded-xl border-2 border-studio-ink bg-pink-50/70 text-studio-ink text-xs font-semibold text-center transition">
-                                🎓 บัณฑิตบัวชมพู
-                            </button>
-                            <button onclick="setReceiptTheme('teddy')" id="theme-teddy" class="theme-btn p-2 rounded-xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-semibold text-center transition">
-                                🧸 หมีมูฟออน
-                            </button>
-                            <button onclick="setReceiptTheme('ticket')" id="theme-ticket" class="theme-btn p-2 rounded-xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-semibold text-center transition">
-                                🎫 ตั๋วสู่อนาคต
-                            </button>
-                        </div>
-
-                        <div class="mt-3 flex flex-wrap gap-4">
-                            <label class="inline-flex items-center gap-2 text-xs font-medium text-studio-ink cursor-pointer">
-                                <input type="checkbox" id="showItemsToggle" checked onchange="renderReceipt()" class="accent-studio-ink w-4 h-4 rounded">
-                                <span>แสดงรายการใบเสร็จความทรงจำ</span>
-                            </label>
-                            <label class="inline-flex items-center gap-2 text-xs font-medium text-studio-ink cursor-pointer">
-                                <input type="checkbox" id="showFrameStickersToggle" onchange="renderReceipt()" class="accent-studio-ink w-4 h-4 rounded">
-                                <span>แสดงป้ายเลขช็อตมุมรูป</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2.5">
-                        <div>
-                            <label class="block text-xs font-semibold text-studio-muted mb-1">ชื่อแก๊ง / ชื่อผู้ถ่าย</label>
-                            <input type="text" id="guestNameInput" value="TEDDY CLASS OF 2026" oninput="renderReceipt()" placeholder="ระบุชื่อแก๊งหรือชื่อคุณ..." class="w-full px-3 py-2 rounded-xl bg-studio-soft border border-studio-border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-studio-muted mb-1">ข้อความอวยพรท้ายใบเสร็จ</label>
-                            <input type="text" id="customQuoteInput" value="ยินดีด้วยนะ ขอให้ก้าวต่อไปมีแต่รอยยิ้มและความสุข!" oninput="renderReceipt()" placeholder="พิมพ์ข้อความที่ระลึก..." class="w-full px-3 py-2 rounded-xl bg-studio-soft border border-studio-border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <!-- RIGHT COLUMN: Clean 80mm Receipt Live Preview & Print Dock (5 Cols) -->
@@ -435,9 +321,9 @@
                 <div class="w-full flex items-center justify-between mb-3 pb-2.5 border-b border-studio-border/80">
                     <div class="flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        <span class="text-xs font-bold text-studio-ink tracking-wide">ตัวอย่างใบเสร็จ 80mm (Smooth HD)</span>
+                        <span id="receiptPreviewLabel" class="text-xs font-bold text-studio-ink tracking-wide">ตัวอย่างใบเสร็จ 80mm (Smooth HD)</span>
                     </div>
-                    <button onclick="openPrinterModal()" id="dockModeBadge" class="text-[11px] font-medium text-studio-pinkDark hover:underline flex items-center gap-1">
+                    <button onclick="openPrinterSettings()" id="dockModeBadge" class="text-[11px] font-medium text-studio-pinkDark hover:underline flex items-center gap-1">
                         <i class="fa-solid fa-gear text-[10px]"></i>
                         <span>OS Driver • 72mm</span>
                     </button>
@@ -469,19 +355,170 @@
                             <i class="fa-solid fa-download text-studio-pinkDark"></i>
                             <span>บันทึกรูป PNG</span>
                         </button>
-                        <button onclick="bumpOrderNumber()" class="py-2.5 px-3 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink font-semibold text-xs border border-studio-border transition flex items-center justify-center gap-1.5">
+                        <div class="py-2.5 px-3 rounded-xl bg-studio-soft text-studio-ink font-semibold text-xs border border-studio-border flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-hashtag text-studio-pinkDark"></i>
-                            <span>รันคิว (<span id="orderNumBadge">#026</span>)</span>
-                        </button>
+                            <span>คิว <span id="orderNumBadge">#026</span></span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- MODAL 1: 80mm Printer Connection & Hardware Setup (Clean & Organized) -->
-    <div id="printerModal" class="no-print fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-studio-border space-y-5 max-h-[90vh] overflow-y-auto">
+    <!-- Admin Settings Mode -->
+    <main id="adminSettingsView" class="no-print hidden flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+        <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <p class="text-[11px] font-bold tracking-widest text-studio-pinkDark uppercase">Admin Settings</p>
+                    <h2 class="text-xl font-bold text-studio-ink">ตั้งค่าหน้าตู้ถ่ายรูป</h2>
+                    <p class="text-xs text-studio-muted mt-1">ปรับกล้อง โทนภาพ ข้อความ คิว และเครื่องพิมพ์ได้จากหน้านี้</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="openPromptModal()" class="px-3.5 py-2.5 rounded-xl bg-studio-soft text-studio-ink text-xs font-semibold flex items-center gap-2 border border-studio-border">
+                        <i class="fa-solid fa-wand-magic-sparkles text-studio-gold"></i>
+                        Prompt
+                    </button>
+                    <button onclick="setAppMode('booth')" class="px-4 py-2.5 rounded-xl bg-studio-ink text-white text-xs font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        กลับหน้าตู้ถ่ายรูป
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border space-y-4">
+            <div class="border-b border-studio-border/70 pb-3">
+                <h3 class="text-sm font-bold flex items-center gap-2"><i class="fa-solid fa-camera text-studio-pinkDark"></i>กล้องและแหล่งภาพ</h3>
+                <p class="text-xs text-studio-muted mt-1">เลือกกล้องที่ต้องการใช้ หรืออัปโหลดภาพเพื่อทดสอบหน้าตู้</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <select id="cameraSelect" onchange="switchCamera(this.value)" class="min-w-[220px] flex-1 text-sm font-medium bg-studio-soft border border-studio-border rounded-xl px-3 py-2.5 text-studio-ink focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
+                    <option value="">กำลังค้นหากล้อง...</option>
+                </select>
+                <button onclick="initCamera()" title="รีเฟรชกล้อง" class="px-3 py-2.5 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-medium border border-studio-border flex items-center gap-2">
+                    <i class="fa-solid fa-rotate"></i>รีเฟรชกล้อง
+                </button>
+                <button onclick="toggleMirror()" id="mirrorBtn" class="px-3 py-2.5 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-medium border border-studio-border flex items-center gap-2">
+                    <i class="fa-solid fa-arrows-left-right text-studio-pinkDark"></i><span>กระจก: เปิด</span>
+                </button>
+                <label class="cursor-pointer px-3 py-2.5 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-medium border border-studio-border flex items-center gap-2">
+                    <i class="fa-regular fa-image text-studio-pinkDark"></i>
+                    <span>อัปโหลดรูป</span>
+                    <input type="file" id="uploadInput" accept="image/*" multiple class="hidden" onchange="handleImageUpload(event)">
+                </label>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border space-y-5">
+            <div class="flex items-center justify-between border-b border-studio-border/70 pb-3">
+                <div>
+                    <h3 class="text-sm font-bold flex items-center gap-2"><i class="fa-solid fa-sliders text-studio-pinkDark"></i>โทนภาพและแสงเงา</h3>
+                    <p class="text-xs text-studio-muted mt-1">เลือกภาพเนียนหรือ Dither พร้อมปรับแสงและคอนทราสต์</p>
+                </div>
+                <button onclick="resetSliders()" class="text-xs text-studio-pinkDark hover:underline font-medium">รีเซ็ตแสงเงา</button>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-studio-muted mb-2">โทนภาพ</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button onclick="setFilterMode('smooth-bw')" id="filter-smooth-bw" class="filter-btn p-2.5 rounded-2xl border-2 border-studio-ink bg-studio-ink text-white text-xs font-semibold text-center transition">
+                        ✨ ขาวดำเนียนใส<br><span class="text-[10px] font-normal opacity-80">ไร้เม็ดจุด (แนะนำ)</span>
+                    </button>
+                    <button onclick="setFilterMode('soft-portrait')" id="filter-soft-portrait" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
+                        🌸 พอร์ตเทรตผิวใส<br><span class="text-[10px] font-normal text-studio-muted">หน้าสว่างเนียนนุ่ม</span>
+                    </button>
+                    <button onclick="setFilterMode('classic-film')" id="filter-classic-film" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
+                        🎞️ ฟิล์มโมโนโครม<br><span class="text-[10px] font-normal text-studio-muted">คมเข้มมีมิติ</span>
+                    </button>
+                    <button onclick="setFilterMode('color')" id="filter-color" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
+                        🎨 ภาพสีธรรมชาติ<br><span class="text-[10px] font-normal text-studio-muted">สำหรับเซฟไฟล์ PNG</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-studio-soft/70 border border-studio-border/80">
+                <div>
+                    <p class="text-xs font-semibold text-studio-ink">เม็ดสี Dither</p>
+                    <p class="text-[11px] text-studio-muted">กระจายจุดขาวดำเพื่อจำลองแสงเงาบนเครื่องพิมพ์ความร้อน</p>
+                </div>
+                <label class="inline-flex items-center gap-2 text-xs font-semibold cursor-pointer">
+                    <span id="ditherStatus">ปิด · ภาพเนียน</span>
+                    <input type="checkbox" id="ditherToggle" onchange="setDitherEnabled(this.checked)" class="accent-studio-pinkDark w-5 h-5">
+                </label>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-studio-soft/70 p-3.5 rounded-2xl border border-studio-border/80">
+                <div>
+                    <div class="flex justify-between text-xs font-medium text-studio-ink mb-1">
+                        <span>ความสว่างใบหน้า (Brightness)</span>
+                        <span id="brightnessVal" class="font-mono text-studio-pinkDark">+10</span>
+                    </div>
+                    <input type="range" id="brightnessSlider" min="-40" max="60" value="10" oninput="updateFilterParams()" class="w-full accent-studio-pinkDark cursor-pointer h-1.5 bg-stone-200 rounded-lg">
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs font-medium text-studio-ink mb-1">
+                        <span>มิติความชัด (Contrast)</span>
+                        <span id="contrastVal" class="font-mono text-studio-pinkDark">+8</span>
+                    </div>
+                    <input type="range" id="contrastSlider" min="-30" max="50" value="8" oninput="updateFilterParams()" class="w-full accent-studio-pinkDark cursor-pointer h-1.5 bg-stone-200 rounded-lg">
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border space-y-4">
+            <div class="border-b border-studio-border/70 pb-3">
+                <h3 class="text-sm font-bold flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-studio-pinkDark"></i>ข้อความและรูปแบบใบเสร็จ</h3>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-studio-muted mb-2">ลายกรอบใบเสร็จ</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setReceiptTheme('graduation')" id="theme-graduation" class="theme-btn p-2 rounded-xl border-2 border-studio-ink bg-pink-50/70 text-studio-ink text-xs font-semibold text-center transition">🎓 บัณฑิตบัวชมพู</button>
+                        <button onclick="setReceiptTheme('teddy')" id="theme-teddy" class="theme-btn p-2 rounded-xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-semibold text-center transition">🧸 หมีมูฟออน</button>
+                        <button onclick="setReceiptTheme('ticket')" id="theme-ticket" class="theme-btn p-2 rounded-xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-semibold text-center transition">🎫 ตั๋วสู่อนาคต</button>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-4">
+                        <label class="inline-flex items-center gap-2 text-xs font-medium text-studio-ink cursor-pointer">
+                            <input type="checkbox" id="showItemsToggle" checked onchange="renderReceipt()" class="accent-studio-ink w-4 h-4 rounded">
+                            <span>แสดงรายการใบเสร็จความทรงจำ</span>
+                        </label>
+                        <label class="inline-flex items-center gap-2 text-xs font-medium text-studio-ink cursor-pointer">
+                            <input type="checkbox" id="showFrameStickersToggle" onchange="renderReceipt()" class="accent-studio-ink w-4 h-4 rounded">
+                            <span>แสดงป้ายเลขช็อตมุมรูป</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-studio-muted mb-1">ชื่อแก๊ง / ชื่อผู้ถ่าย</label>
+                        <input type="text" id="guestNameInput" value="TEDDY CLASS OF 2026" oninput="renderReceipt()" placeholder="ระบุชื่อแก๊งหรือชื่อคุณ..." class="w-full px-3 py-2.5 rounded-xl bg-studio-soft border border-studio-border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-studio-muted mb-1">ข้อความอวยพรท้ายใบเสร็จ</label>
+                        <input type="text" id="customQuoteInput" value="ยินดีด้วยนะ ขอให้ก้าวต่อไปมีแต่รอยยิ้มและความสุข!" oninput="renderReceipt()" placeholder="พิมพ์ข้อความที่ระลึก..." class="w-full px-3 py-2.5 rounded-xl bg-studio-soft border border-studio-border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-sm font-bold flex items-center gap-2"><i class="fa-solid fa-hashtag text-studio-pinkDark"></i>จัดการเลขคิว</h3>
+                    <p class="text-xs text-studio-muted mt-1">เลขคิวนี้จะแสดงบนใบเสร็จหน้าตู้</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="orderNumberInput" class="text-xs font-semibold">คิวปัจจุบัน</label>
+                    <input type="number" id="orderNumberInput" min="1" step="1" value="26" onchange="setOrderNumber(this.value)" class="w-24 px-3 py-2 rounded-xl bg-studio-soft border border-studio-border text-sm font-mono font-bold">
+                    <button onclick="bumpOrderNumber()" class="px-4 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold">รันคิวถัดไป</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Printer Connection & Hardware Setup -->
+        <section id="printerSettings" class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border space-y-5">
+        <div class="space-y-5">
             <div class="flex items-center justify-between border-b border-studio-border pb-3">
                 <div>
                     <h3 class="text-base font-bold text-studio-ink flex items-center gap-2">
@@ -492,9 +529,6 @@
                         แนะนำโหมด OS Driver เพื่อให้ไดรเวอร์เครื่องพิมพ์ 80mm ไล่เฉดภาพขาว-ดำได้เนียนละเอียดที่สุด
                     </p>
                 </div>
-                <button onclick="closePrinterModal()" class="w-8 h-8 rounded-full bg-studio-soft hover:bg-pink-100 flex items-center justify-center text-studio-ink">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
             </div>
 
             <!-- Connection Mode Selector -->
@@ -617,12 +651,11 @@
                     <i class="fa-solid fa-receipt"></i>
                     <span>พิมพ์ใบทดสอบ 80mm</span>
                 </button>
-                <button onclick="closePrinterModal()" class="px-5 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold">
-                    เสร็จสิ้น
-                </button>
+                <button onclick="setAppMode('booth')" class="px-5 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold">กลับหน้าตู้ถ่ายรูป</button>
             </div>
         </div>
-    </div>
+        </section>
+    </main>
 
     <!-- MODAL 2: Ready-to-Use Prompt Modal -->
     <div id="promptModal" class="no-print fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
@@ -648,8 +681,10 @@
 
 ฟีเจอร์หลัก:
 1. ประมวลผลภาพขาว-ดำแบบเนียนใส (Smooth Studio Grayscale & Soft Portrait 1152px High-DPI) ไร้เม็ดจุด (No grainy dithering dots) ให้ใบหน้าสว่างเนียนและดวงตาคมชัด
-2. รองรับการถ่ายภาพ 1, 2, 3 และ 4 แอคชั่น พร้อมระบบนับถอยหลังและถ่ายซ้ำเฉพาะช่องได้
-3. รองรับการสั่งพิมพ์ออกเครื่องพิมพ์ใบเสร็จความร้อนขนาด 80mm (@page size: 80mm auto) และดาวน์โหลดเป็นไฟล์ PNG ความละเอียดสูง</textarea>
+2. แยกหน้าตู้ถ่ายรูปสำหรับผู้ใช้งานออกจากหน้าตั้งค่าหลังบ้านสำหรับผู้ดูแล
+3. รองรับการถ่ายภาพ 1, 2, 3 และ 4 แอคชั่น พร้อมระบบนับถอยหลังและถ่ายซ้ำเฉพาะช่องได้
+4. ตั้งค่ากล้อง โทนภาพ Dither/ภาพเนียน แสงเงา ข้อความอวยพร ชื่อแก๊ง และเลขคิวจากหน้าหลังบ้าน
+5. รองรับการตั้งค่าเครื่องพิมพ์ OS Driver, USB, Serial, Bluetooth และ LAN พร้อมพิมพ์ใบทดสอบ 80mm</textarea>
 
             <div class="flex justify-end gap-2">
                 <button onclick="copyPromptText()" class="px-4 py-2 rounded-xl bg-studio-pinkDark hover:opacity-95 text-white text-xs font-semibold flex items-center gap-1.5">
@@ -673,6 +708,7 @@
             capturedFrames: [],
             isMirrored: true,
             filterMode: 'smooth-bw',    // 'smooth-bw' | 'soft-portrait' | 'classic-film' | 'color'
+            dither: false,
             brightness: 10,
             contrast: 8,
             receiptTheme: 'graduation', // 'graduation' | 'teddy' | 'ticket'
@@ -704,6 +740,21 @@
             "แอคที่ 3: ท่าโบกมือบ๊ายบาย Bye Nior 2026! 🎓🧸",
             "แอคที่ 4: ท่าฟรีสไตล์สุดน่ารัก ส่งท้ายความทรงจำ! 💖"
         ];
+
+        function setAppMode(mode) {
+            const isAdmin = mode === 'admin';
+            document.getElementById('boothModeView').classList.toggle('hidden', isAdmin);
+            document.getElementById('adminSettingsView').classList.toggle('hidden', !isAdmin);
+            document.getElementById('boothTab').setAttribute('aria-selected', String(!isAdmin));
+            document.getElementById('adminTab').setAttribute('aria-selected', String(isAdmin));
+            document.getElementById('boothTab').className = isAdmin
+                ? 'px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-studio-muted text-xs font-semibold transition flex items-center gap-2 border border-studio-border'
+                : 'px-3.5 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold transition flex items-center gap-2 border border-studio-ink';
+            document.getElementById('adminTab').className = isAdmin
+                ? 'px-3.5 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold transition flex items-center gap-2 border border-studio-ink'
+                : 'px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-studio-muted text-xs font-semibold transition flex items-center gap-2 border border-studio-border';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         // Toast Helper
         function showToast(message, type = 'info') {
@@ -1163,7 +1214,7 @@
         }
 
         // ==========================================
-        // 5. SMOOTH STUDIO PHOTO TONE ENGINE (NO GRAINY DOTS!)
+        // 5. STUDIO PHOTO TONE ENGINE
         // ==========================================
         function setFilterMode(mode) {
             state.filterMode = mode;
@@ -1185,7 +1236,27 @@
                 active.className = 'filter-btn p-2.5 rounded-2xl border-2 border-studio-ink bg-studio-ink text-white text-xs font-semibold text-center transition shadow-sm';
             }
 
+            updateDitherControl();
             updateLiveVideoFilterStyle();
+            renderReceipt();
+        }
+
+        function updateDitherControl() {
+            const toggle = document.getElementById('ditherToggle');
+            const status = document.getElementById('ditherStatus');
+            const isColor = state.filterMode === 'color';
+            toggle.disabled = isColor;
+            status.textContent = isColor
+                ? 'ใช้ได้กับภาพขาวดำเท่านั้น'
+                : state.dither ? 'เปิด · เม็ดสี Dither' : 'ปิด · ภาพเนียน';
+            document.getElementById('receiptPreviewLabel').textContent = isColor
+                ? 'ตัวอย่างใบเสร็จ 80mm (Color)'
+                : state.dither ? 'ตัวอย่างใบเสร็จ 80mm (Dither)' : 'ตัวอย่างใบเสร็จ 80mm (Smooth HD)';
+        }
+
+        function setDitherEnabled(enabled) {
+            state.dither = enabled;
+            updateDitherControl();
             renderReceipt();
         }
 
@@ -1216,7 +1287,7 @@
             renderReceipt(true);
         }
 
-        // Smooth 256-Level Continuous Tone Processing (Zero Stipple / Zero Grainy Dots)
+        // Smooth continuous tones by default; optional Floyd-Steinberg monochrome dithering.
         function processPhotoSmoothStudio(sourceCanvas, targetWidth, targetHeight) {
             const outCanvas = document.createElement('canvas');
             outCanvas.width = targetWidth;
@@ -1255,6 +1326,36 @@
                     data[i] = lut[data[i]];
                     data[i + 1] = lut[data[i + 1]];
                     data[i + 2] = lut[data[i + 2]];
+                }
+            } else if (state.dither) {
+                const grayscale = new Float32Array(targetWidth * targetHeight);
+                for (let i = 0, pixel = 0; i < data.length; i += 4, pixel++) {
+                    const lum = Math.round(0.32 * data[i] + 0.58 * data[i + 1] + 0.10 * data[i + 2]);
+                    grayscale[pixel] = lut[lum];
+                }
+
+                for (let y = 0; y < targetHeight; y++) {
+                    for (let x = 0; x < targetWidth; x++) {
+                        const pixel = y * targetWidth + x;
+                        const oldValue = grayscale[pixel];
+                        const newValue = oldValue < 128 ? 0 : 255;
+                        const error = oldValue - newValue;
+                        grayscale[pixel] = newValue;
+                        if (x + 1 < targetWidth) grayscale[pixel + 1] += error * 7 / 16;
+                        if (y + 1 < targetHeight) {
+                            if (x > 0) grayscale[pixel + targetWidth - 1] += error * 3 / 16;
+                            grayscale[pixel + targetWidth] += error * 5 / 16;
+                            if (x + 1 < targetWidth) grayscale[pixel + targetWidth + 1] += error / 16;
+                        }
+                    }
+                }
+
+                for (let pixel = 0; pixel < grayscale.length; pixel++) {
+                    const value = grayscale[pixel];
+                    const i = pixel * 4;
+                    data[i] = value;
+                    data[i + 1] = value;
+                    data[i + 2] = value;
                 }
             } else {
                 // Smooth Studio Monochrome (Weighted green/red luminance for flattering skin tones)
@@ -1498,12 +1599,12 @@
             const frameX = PAD + 24;
             for (let i = 0; i < state.shotCount; i++) {
                 const rawFrame = state.capturedFrames[i] || createDemoFrameCanvas(i);
-                const smoothPhoto = processPhotoSmoothStudio(rawFrame, frameW, frameH);
+                const processedPhoto = processPhotoSmoothStudio(rawFrame, frameW, frameH);
 
                 // Clean sleek photo border
                 ctx.fillStyle = '#111111';
                 ctx.fillRect(frameX - 4, curY - 4, frameW + 8, frameH + 8);
-                ctx.drawImage(smoothPhoto, frameX, curY, frameW, frameH);
+                ctx.drawImage(processedPhoto, frameX, curY, frameW, frameH);
 
                 if (showStickers) {
                     ctx.fillStyle = 'rgba(17, 17, 17, 0.85)';
@@ -1613,18 +1714,13 @@
         }
 
         // ==========================================
-        // 7. PRINTER & MODAL CONTROLS
+        // 7. PRINTER & MODE CONTROLS
         // ==========================================
-        function openPrinterModal() {
-            const modal = document.getElementById('printerModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closePrinterModal() {
-            const modal = document.getElementById('printerModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+        function openPrinterSettings() {
+            setAppMode('admin');
+            requestAnimationFrame(() => {
+                document.getElementById('printerSettings').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
         }
 
         function openPromptModal() {
@@ -1651,10 +1747,21 @@
             document.getElementById('dockModeBadge').innerHTML = `<i class="fa-solid fa-gear text-[10px]"></i><span>${state.printer.mode.toUpperCase()} • ${val}</span>`;
         }
 
-        function bumpOrderNumber() {
-            state.orderNumber++;
-            document.getElementById('orderNumBadge').textContent = `#${String(state.orderNumber).padStart(3, '0')}`;
+        function setOrderNumber(value) {
+            const nextNumber = Number(value);
+            if (!Number.isSafeInteger(nextNumber) || nextNumber < 1) {
+                showToast('กรุณาระบุเลขคิวตั้งแต่ 1 ขึ้นไป', 'warning');
+                document.getElementById('orderNumberInput').value = state.orderNumber;
+                return;
+            }
+            state.orderNumber = nextNumber;
+            document.getElementById('orderNumBadge').textContent = `#${String(nextNumber).padStart(3, '0')}`;
+            document.getElementById('orderNumberInput').value = nextNumber;
             renderReceipt(true);
+        }
+
+        function bumpOrderNumber() {
+            setOrderNumber(state.orderNumber + 1);
         }
 
         function setPrinterMode(mode) {
@@ -1762,7 +1869,30 @@
         }
 
         function printTestSlip() {
-            printThermalReceipt();
+            const canvas = document.createElement('canvas');
+            canvas.width = 1152;
+            canvas.height = 520;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#111111';
+            ctx.textAlign = 'center';
+            ctx.font = '700 54px "Kanit", sans-serif';
+            ctx.fillText('TEDDY MOVE ON', canvas.width / 2, 100);
+            ctx.font = '600 34px "Kanit", sans-serif';
+            ctx.fillText('ทดสอบการพิมพ์ 80mm', canvas.width / 2, 175);
+            ctx.font = '400 26px "Kanit", sans-serif';
+            ctx.fillText('ระบบพิมพ์พร้อมใช้งาน', canvas.width / 2, 235);
+            ctx.font = '500 24px "Space Mono", monospace';
+            ctx.fillText(`QUEUE #${String(state.orderNumber).padStart(3, '0')}`, canvas.width / 2, 300);
+            ctx.fillText(new Date().toLocaleString('th-TH'), canvas.width / 2, 355);
+            ctx.fillRect(90, 400, canvas.width - 180, 3);
+            ctx.font = '400 21px "Kanit", sans-serif';
+            ctx.fillText('Bye Nior 2026 • Printer Test Slip', canvas.width / 2, 455);
+
+            const printImg = document.getElementById('print-final-image');
+            printImg.src = canvas.toDataURL('image/png');
+            setTimeout(() => window.print(), 200);
         }
 
         function downloadReceiptImage() {
@@ -1785,6 +1915,9 @@
 
         window.onload = function() {
             updatePaperWidth('72mm');
+            document.getElementById('orderNumberInput').value = state.orderNumber;
+            updateDitherControl();
+            setPrinterMode(state.printer.mode);
             generateDemoPhotos();
             initCamera();
         };

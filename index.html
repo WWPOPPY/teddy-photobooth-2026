@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bye Nior 2026 : TEDDY MOVE ON — Minimalist 80mm Photo Booth</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Kanit, Mali, Space Mono, Cormorant Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Kanit:wght@300;400;500;600;700&family=Mali:wght@500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Kanit', 'sans-serif'],
+                        cute: ['Mali', 'cursive'],
+                        mono: ['Space Mono', 'Kanit', 'monospace'],
+                        serif: ['Cormorant Garamond', 'serif']
+                    },
+                    colors: {
+                        studio: {
+                            bg: '#FDFBF9',
+                            card: '#FFFFFF',
+                            soft: '#F9F3F3',
+                            border: '#F1E4E6',
+                            pink: '#D87A9E',
+                            pinkDark: '#B8587D',
+                            gold: '#C89D54',
+                            ink: '#292224',
+                            muted: '#7A6C70'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Clean Minimal Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E2C6D0;
+            border-radius: 9999px;
+        }
+
+        /* Subtle Zigzag Bottom Edge for Receipt Preview */
+        .receipt-zigzag-bottom {
+            background: linear-gradient(-45deg, transparent 7px, #ffffff 0), linear-gradient(45deg, transparent 7px, #ffffff 0);
+            background-position: left top;
+            background-repeat: repeat-x;
+            background-size: 14px 14px;
+            height: 14px;
+            width: 100%;
+        }
+
+        /* Smooth Paper Slide Animation */
+        @keyframes printSlide {
+            0% {
+                transform: translateY(-20px);
+                opacity: 0.75;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .animate-print {
+            animation: printSlide 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Camera Shutter Flash */
+        @keyframes flashAnim {
+            0% { opacity: 0.95; }
+            100% { opacity: 0; }
+        }
+        .camera-flash {
+            animation: flashAnim 0.35s ease-out forwards;
+        }
+
+        /* High-Resolution Smooth Rendering (NO PIXELATION) */
+        #receiptCanvas, #print-final-image {
+            image-rendering: auto !important;
+        }
+
+        /* STRICT 80MM THERMAL RECEIPT PRINT RULES */
+        @media print {
+            @page {
+                size: 80mm auto;
+                margin: 0mm !important;
+            }
+            html, body {
+                width: 80mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #print-only-container {
+                display: block !important;
+                width: var(--print-width, 72mm) !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+            }
+            #print-only-container img {
+                width: 100% !important;
+                height: auto !important;
+                display: block !important;
+                image-rendering: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-studio-bg text-studio-ink min-h-screen flex flex-col selection:bg-pink-200 antialiased">
+
+    <!-- Dedicated Print Output Container (Only visible during window.print()) -->
+    <div id="print-only-container" class="hidden">
+        <img id="print-final-image" src="" alt="80mm Receipt Print Output">
+    </div>
+
+    <!-- Clean Minimalist Top Header -->
+    <header class="no-print bg-white/85 backdrop-blur-md border-b border-studio-border sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- Brand Emblem & Event Info -->
+            <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-100 to-rose-50 border border-pink-200/80 flex items-center justify-center shadow-sm">
+                    <span class="font-serif font-bold text-amber-600 text-sm tracking-tighter">( <span class="text-stone-800">🎓</span> )</span>
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-[11px] font-bold tracking-widest uppercase text-studio-pinkDark bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-200/60">
+                            BYE NIOR 2026
+                        </span>
+                        <span class="text-xs text-studio-muted hidden md:inline">
+                            ศุกร์ที่ 30 ต.ค. 2569 • 16:00–19:00 น. • ณ โถง อาคารพระมิ่งขวัญฯ ชั้น 2
+                        </span>
+                    </div>
+                    <h1 class="text-lg sm:text-xl font-bold text-studio-ink tracking-tight flex items-center gap-2">
+                        <span class="text-studio-pinkDark">TEDDY MOVE ON</span>
+                        <span class="text-xs font-normal text-studio-muted border-l border-studio-border pl-2">80mm Studio Photo Booth</span>
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Clean Action Bar -->
+            <div class="flex items-center gap-2">
+                <!-- Printer Settings Modal Trigger -->
+                <button onclick="openPrinterModal()" class="px-3.5 py-2 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-semibold transition flex items-center gap-2 border border-studio-border">
+                    <span id="headerStatusDot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <i class="fa-solid fa-print text-studio-pinkDark"></i>
+                    <span id="headerPrinterText">ตั้งค่าเครื่องพิมพ์ 80mm</span>
+                </button>
+
+                <!-- Prompt Modal Trigger -->
+                <button onclick="openPromptModal()" class="px-3 py-2 rounded-xl bg-white hover:bg-stone-50 text-studio-muted hover:text-studio-ink text-xs font-medium transition flex items-center gap-1.5 border border-studio-border" title="ดู Prompt สำหรับสร้างเว็บนี้">
+                    <i class="fa-solid fa-wand-magic-sparkles text-studio-gold"></i>
+                    <span class="hidden sm:inline">Prompt</span>
+                </button>
+
+                <!-- Fullscreen Kiosk Trigger -->
+                <button onclick="toggleKioskMode()" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-white hover:bg-stone-50 text-studio-muted hover:text-studio-ink text-xs font-medium transition flex items-center gap-1.5 border border-studio-border" title="โหมดเต็มจอ">
+                    <i class="fa-solid fa-expand"></i>
+                    <span class="hidden md:inline">เต็มจอ</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Non-blocking Toast Container -->
+    <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- Main Workspace (Clean 2-Column Studio Layout) -->
+    <main class="no-print flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- LEFT COLUMN: Camera Stage & Clean Customization (7 Cols) -->
+        <section class="lg:col-span-7 flex flex-col gap-5">
+
+            <!-- 1. CAMERA STAGE CARD -->
+            <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border">
+
+                <!-- Minimal Camera Header Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3.5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                        <select id="cameraSelect" onchange="switchCamera(this.value)" class="text-xs font-medium bg-studio-soft border border-studio-border rounded-xl px-3 py-1.5 text-studio-ink focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
+                            <option value="">กำลังค้นหากล้องโน้ตบุ๊ก...</option>
+                        </select>
+                        <button onclick="initCamera()" title="รีเฟรชกล้อง" class="w-8 h-8 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-muted hover:text-studio-ink transition flex items-center justify-center border border-studio-border">
+                            <i class="fa-solid fa-rotate text-xs"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleMirror()" id="mirrorBtn" class="px-3 py-1.5 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-medium transition flex items-center gap-1.5 border border-studio-border">
+                            <i class="fa-solid fa-arrows-left-right text-studio-pinkDark"></i>
+                            <span>กระจก: เปิด</span>
+                        </button>
+                        <label class="cursor-pointer px-3 py-1.5 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink text-xs font-medium transition flex items-center gap-1.5 border border-studio-border">
+                            <i class="fa-regular fa-image text-studio-pinkDark"></i>
+                            <span>อัปโหลดรูป</span>
+                            <input type="file" id="uploadInput" accept="image/*" multiple class="hidden" onchange="handleImageUpload(event)">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Live HD Webcam Viewport -->
+                <div class="relative w-full aspect-[4/3] bg-stone-950 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center">
+                    <video id="webcamVideo" autoplay playsinline muted class="w-full h-full object-cover transform scale-x-[-1] transition-all duration-300"></video>
+
+                    <!-- Subtle Minimalist Guide Overlay -->
+                    <div class="absolute inset-0 pointer-events-none flex flex-col justify-between p-4">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-black/45 backdrop-blur-md text-white/95 text-[11px] font-medium px-3 py-1 rounded-full">
+                                ( 🎓 ) TEDDY MOVE ON
+                            </span>
+                            <span id="shotProgressBadge" class="bg-white/90 backdrop-blur-md text-studio-ink text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
+                                3 แอคชั่น
+                            </span>
+                        </div>
+
+                        <!-- Pose Prompt Pill -->
+                        <div class="flex justify-center">
+                            <div id="poseInstruction" class="bg-black/50 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium">
+                                เตรียมโพสท่าสุดน่ารัก! คลิกเริ่มถ่ายรูปได้เลย ✨
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Countdown Overlay -->
+                    <div id="countdownOverlay" class="absolute inset-0 bg-black/35 backdrop-blur-[2px] hidden items-center justify-center z-20">
+                        <div class="text-center">
+                            <div id="countdownNumber" class="text-8xl sm:text-9xl font-bold text-white drop-shadow-md font-sans">
+                                3
+                            </div>
+                            <p id="countdownSubtext" class="text-white text-sm font-semibold mt-2 bg-black/60 px-4 py-1 rounded-full">
+                                แอคชั่นที่ 1 / 3
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- White Shutter Flash -->
+                    <div id="flashOverlay" class="absolute inset-0 bg-white pointer-events-none opacity-0 z-30"></div>
+
+                    <!-- Camera Fallback Banner -->
+                    <div id="cameraFallback" class="absolute inset-0 bg-stone-900/95 hidden flex-col items-center justify-center p-6 text-center z-10">
+                        <div class="w-14 h-14 rounded-2xl bg-white/10 text-pink-300 flex items-center justify-center text-2xl mb-3">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <h3 class="text-white font-semibold text-base">ยังไม่ได้เชื่อมต่อกล้องเว็บแคม</h3>
+                        <p class="text-stone-400 text-xs max-w-sm mt-1 mb-4">
+                            กดอนุญาตการใช้กล้องบนเบราว์เซอร์ หรือใช้โหมดภาพตัวอย่างเพื่อทดสอบการพิมพ์ใบเสร็จ 80mm ได้ทันที
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-2.5">
+                            <button onclick="initCamera()" class="px-4 py-2 rounded-xl bg-studio-pink hover:bg-studio-pinkDark text-white font-semibold text-xs transition">
+                                เชื่อมต่อกล้องอีกครั้ง
+                            </button>
+                            <button onclick="generateDemoPhotos()" class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs transition">
+                                สร้างภาพตัวอย่าง (Demo)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Capture Controls Bar -->
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <!-- Shot Count Selector Pills -->
+                    <div class="flex items-center gap-1 bg-studio-soft p-1 rounded-2xl border border-studio-border">
+                        <button onclick="setShotCount(1)" id="shotBtn1" class="shot-mode-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition">
+                            1 รูป
+                        </button>
+                        <button onclick="setShotCount(2)" id="shotBtn2" class="shot-mode-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition">
+                            2 รูป
+                        </button>
+                        <button onclick="setShotCount(3)" id="shotBtn3" class="shot-mode-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition bg-studio-ink text-white shadow-sm">
+                            3 รูป (แนะนำ)
+                        </button>
+                        <button onclick="setShotCount(4)" id="shotBtn4" class="shot-mode-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition">
+                            4 รูป
+                        </button>
+                    </div>
+
+                    <!-- Timer Selector -->
+                    <div class="flex items-center gap-2 text-xs text-studio-muted">
+                        <span>นับถอยหลัง:</span>
+                        <select id="timerSelect" class="bg-studio-soft border border-studio-border rounded-xl px-2.5 py-1.5 text-studio-ink font-medium focus:outline-none">
+                            <option value="3" selected>3 วินาที</option>
+                            <option value="5">5 วินาที</option>
+                            <option value="1">1 วินาที</option>
+                            <option value="0">ถ่ายทันที</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Main Shutter Button & Demo Trigger -->
+                <div class="mt-3.5 grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                    <button id="startCaptureBtn" onclick="startPhotoSession()" class="sm:col-span-3 py-3.5 px-6 rounded-2xl bg-studio-ink hover:bg-stone-800 text-white font-semibold text-base shadow-md hover:shadow-lg active:scale-[0.99] transition flex items-center justify-center gap-2.5">
+                        <i class="fa-solid fa-camera text-pink-300"></i>
+                        <span>เริ่มถ่ายรูป (Start Photo Booth)</span>
+                    </button>
+                    <button onclick="generateDemoPhotos()" class="py-3.5 px-4 rounded-2xl bg-studio-soft hover:bg-pink-50 text-studio-ink font-semibold text-xs transition flex items-center justify-center gap-1.5 border border-studio-border">
+                        <i class="fa-solid fa-sparkles text-studio-gold"></i>
+                        <span>ภาพตัวอย่าง</span>
+                    </button>
+                </div>
+
+                <!-- Clean Captured Shots Strip (Click any thumbnail to retake) -->
+                <div class="mt-4 pt-3.5 border-t border-studio-border/70">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-semibold text-studio-muted">
+                            รูปที่ถ่ายแล้ว <span class="font-normal">(คลิกที่รูปเพื่อถ่ายใหม่เฉพาะช่องได้)</span>
+                        </span>
+                    </div>
+                    <div id="thumbnailsContainer" class="grid grid-cols-4 gap-2.5"></div>
+                </div>
+            </div>
+
+            <!-- 2. MINIMALIST STUDIO CUSTOMIZATION CARD -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-studio-border space-y-5">
+                <div class="flex items-center justify-between border-b border-studio-border/70 pb-3">
+                    <h2 class="text-sm font-bold text-studio-ink flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-studio-pinkDark"></i>
+                        <span>โทนภาพเนียนใส & ตกแต่งใบเสร็จ (Smooth Studio Controls)</span>
+                    </h2>
+                    <button onclick="resetSliders()" class="text-xs text-studio-pinkDark hover:underline font-medium">
+                        รีเซ็ตค่าเริ่มต้น
+                    </button>
+                </div>
+
+                <!-- Section A: Smooth Photo Tone (NO DOTS / NO GRAIN) -->
+                <div>
+                    <label class="block text-xs font-semibold text-studio-muted mb-2">
+                        1. โทนภาพ (ไร้เม็ดจุด • คมชัดเนียนใสสำหรับเครื่องพิมพ์ 80mm)
+                    </label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <button onclick="setFilterMode('smooth-bw')" id="filter-smooth-bw" class="filter-btn p-2.5 rounded-2xl border-2 border-studio-ink bg-studio-ink text-white text-xs font-semibold text-center transition">
+                            ✨ ขาวดำเนียนใส<br><span class="text-[10px] font-normal opacity-80">ไร้เม็ดจุด (แนะนำ)</span>
+                        </button>
+                        <button onclick="setFilterMode('soft-portrait')" id="filter-soft-portrait" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
+                            🌸 พอร์ตเทรตผิวใส<br><span class="text-[10px] font-normal text-studio-muted">หน้าสว่างเนียนนุ่ม</span>
+                        </button>
+                        <button onclick="setFilterMode('classic-film')" id="filter-classic-film" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
+                            🎞️ ฟิล์มโมโนโครม<br><span class="text-[10px] font-normal text-studio-muted">คมเข้มมีมิติ</span>
+                        </button>
+                        <button onclick="setFilterMode('color')" id="filter-color" class="filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition">
+                            🎨 ภาพสีธรรมชาติ<br><span class="text-[10px] font-normal text-studio-muted">สำหรับเซฟไฟล์ PNG</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section B: Clean Brightness & Contrast Sliders -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-studio-soft/70 p-3.5 rounded-2xl border border-studio-border/80">
+                    <div>
+                        <div class="flex justify-between text-xs font-medium text-studio-ink mb-1">
+                            <span>ความสว่างใบหน้า (Brightness)</span>
+                            <span id="brightnessVal" class="font-mono text-studio-pinkDark">+10</span>
+                        </div>
+                        <input type="range" id="brightnessSlider" min="-40" max="60" value="10" oninput="updateFilterParams()" class="w-full accent-studio-pinkDark cursor-pointer h-1.5 bg-stone-200 rounded-lg">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-medium text-studio-ink mb-1">
+                            <span>มิติความชัด (Contrast)</span>
+                            <span id="contrastVal" class="font-mono text-studio-pinkDark">+8</span>
+                        </div>
+                        <input type="range" id="contrastSlider" min="-30" max="50" value="8" oninput="updateFilterParams()" class="w-full accent-studio-pinkDark cursor-pointer h-1.5 bg-stone-200 rounded-lg">
+                    </div>
+                </div>
+
+                <!-- Section C: Receipt Theme & Custom Messages -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                    <div>
+                        <label class="block text-xs font-semibold text-studio-muted mb-2">
+                            2. ลายกรอบใบเสร็จ (Receipt Theme)
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setReceiptTheme('graduation')" id="theme-graduation" class="theme-btn p-2 rounded-xl border-2 border-studio-ink bg-pink-50/70 text-studio-ink text-xs font-semibold text-center transition">
+                                🎓 บัณฑิตบัวชมพู
+                            </button>
+                            <button onclick="setReceiptTheme('teddy')" id="theme-teddy" class="theme-btn p-2 rounded-xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-semibold text-center transition">
+                                🧸 หมีมูฟออน
+                            </button>
+                            <button onclick="setReceiptTheme('ticket')" id="theme-ticket" class="theme-btn p-2 rounded-xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-semibold text-center transition">
+                                🎫 ตั๋วสู่อนาคต
+                            </button>
+                        </div>
+
+                        <div class="mt-3 flex flex-wrap gap-4">
+                            <label class="inline-flex items-center gap-2 text-xs font-medium text-studio-ink cursor-pointer">
+                                <input type="checkbox" id="showItemsToggle" checked onchange="renderReceipt()" class="accent-studio-ink w-4 h-4 rounded">
+                                <span>แสดงรายการใบเสร็จความทรงจำ</span>
+                            </label>
+                            <label class="inline-flex items-center gap-2 text-xs font-medium text-studio-ink cursor-pointer">
+                                <input type="checkbox" id="showFrameStickersToggle" onchange="renderReceipt()" class="accent-studio-ink w-4 h-4 rounded">
+                                <span>แสดงป้ายเลขช็อตมุมรูป</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-studio-muted mb-1">ชื่อแก๊ง / ชื่อผู้ถ่าย</label>
+                            <input type="text" id="guestNameInput" value="TEDDY CLASS OF 2026" oninput="renderReceipt()" placeholder="ระบุชื่อแก๊งหรือชื่อคุณ..." class="w-full px-3 py-2 rounded-xl bg-studio-soft border border-studio-border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-studio-muted mb-1">ข้อความอวยพรท้ายใบเสร็จ</label>
+                            <input type="text" id="customQuoteInput" value="ยินดีด้วยนะ ขอให้ก้าวต่อไปมีแต่รอยยิ้มและความสุข!" oninput="renderReceipt()" placeholder="พิมพ์ข้อความที่ระลึก..." class="w-full px-3 py-2 rounded-xl bg-studio-soft border border-studio-border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-studio-pink/40">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: Clean 80mm Receipt Live Preview & Print Dock (5 Cols) -->
+        <section class="lg:col-span-5 flex flex-col items-center sticky top-20">
+
+            <div class="w-full max-w-[400px] bg-white rounded-3xl p-5 shadow-[0_12px_40px_rgb(0,0,0,0.06)] border border-studio-border flex flex-col items-center">
+
+                <!-- Minimalist Printer Slot Top Bar -->
+                <div class="w-full flex items-center justify-between mb-3 pb-2.5 border-b border-studio-border/80">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span class="text-xs font-bold text-studio-ink tracking-wide">ตัวอย่างใบเสร็จ 80mm (Smooth HD)</span>
+                    </div>
+                    <button onclick="openPrinterModal()" id="dockModeBadge" class="text-[11px] font-medium text-studio-pinkDark hover:underline flex items-center gap-1">
+                        <i class="fa-solid fa-gear text-[10px]"></i>
+                        <span>OS Driver • 72mm</span>
+                    </button>
+                </div>
+
+                <!-- Paper Slot Visual Bar -->
+                <div class="w-full h-2 bg-stone-200 rounded-full mb-1"></div>
+
+                <!-- Smooth High-Res Receipt Paper Container -->
+                <div class="w-full bg-stone-100/70 p-3 sm:p-4 rounded-2xl border border-stone-200/70 flex flex-col items-center">
+                    <div id="receiptPaperWrapper" class="w-full max-w-[320px] shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all">
+                        <div class="bg-white">
+                            <!-- High-Resolution 2x Canvas (1152px width = ultra-smooth text & photos for 80mm print) -->
+                            <canvas id="receiptCanvas" width="1152" height="2400" class="w-full h-auto block bg-white"></canvas>
+                        </div>
+                        <div class="receipt-zigzag-bottom"></div>
+                    </div>
+                </div>
+
+                <!-- Primary Print & Save Actions -->
+                <div class="w-full mt-4 space-y-2.5">
+                    <button onclick="printThermalReceipt()" class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-studio-pinkDark to-studio-pink hover:opacity-95 text-white font-bold text-sm shadow-md hover:shadow-lg active:scale-[0.99] transition flex items-center justify-center gap-2.5">
+                        <i class="fa-solid fa-print text-base"></i>
+                        <span>สั่งปริ้นใบเสร็จ 80mm (Print Receipt)</span>
+                    </button>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <button onclick="downloadReceiptImage()" class="py-2.5 px-3 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink font-semibold text-xs border border-studio-border transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-download text-studio-pinkDark"></i>
+                            <span>บันทึกรูป PNG</span>
+                        </button>
+                        <button onclick="bumpOrderNumber()" class="py-2.5 px-3 rounded-xl bg-studio-soft hover:bg-pink-50 text-studio-ink font-semibold text-xs border border-studio-border transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-hashtag text-studio-pinkDark"></i>
+                            <span>รันคิว (<span id="orderNumBadge">#026</span>)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL 1: 80mm Printer Connection & Hardware Setup (Clean & Organized) -->
+    <div id="printerModal" class="no-print fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-studio-border space-y-5 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-studio-border pb-3">
+                <div>
+                    <h3 class="text-base font-bold text-studio-ink flex items-center gap-2">
+                        <i class="fa-solid fa-print text-studio-pinkDark"></i>
+                        <span>ตั้งค่าการเชื่อมต่อเครื่องพิมพ์ใบเสร็จความร้อน 80mm</span>
+                    </h3>
+                    <p class="text-xs text-studio-muted mt-0.5">
+                        แนะนำโหมด OS Driver เพื่อให้ไดรเวอร์เครื่องพิมพ์ 80mm ไล่เฉดภาพขาว-ดำได้เนียนละเอียดที่สุด
+                    </p>
+                </div>
+                <button onclick="closePrinterModal()" class="w-8 h-8 rounded-full bg-studio-soft hover:bg-pink-100 flex items-center justify-center text-studio-ink">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Connection Mode Selector -->
+            <div>
+                <label class="block text-xs font-bold text-studio-muted uppercase mb-2">
+                    1. เลือกช่องทางเชื่อมต่อเครื่องพิมพ์ (Connection Mode)
+                </label>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <button onclick="setPrinterMode('driver')" id="pmode-driver" class="pmode-btn p-2.5 rounded-2xl border-2 border-studio-ink bg-studio-ink text-white text-xs font-bold flex flex-col items-center gap-1 transition">
+                        <i class="fa-solid fa-desktop"></i>
+                        <span>OS Driver</span>
+                        <span class="text-[10px] font-normal opacity-80">เนียนที่สุด (แนะนำ)</span>
+                    </button>
+                    <button onclick="setPrinterMode('usb')" id="pmode-usb" class="pmode-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-bold flex flex-col items-center gap-1 transition">
+                        <i class="fa-brands fa-usb"></i>
+                        <span>WebUSB</span>
+                        <span class="text-[10px] font-normal text-studio-muted">สาย USB ตรง</span>
+                    </button>
+                    <button onclick="setPrinterMode('serial')" id="pmode-serial" class="pmode-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-bold flex flex-col items-center gap-1 transition">
+                        <i class="fa-solid fa-microchip"></i>
+                        <span>COM Port</span>
+                        <span class="text-[10px] font-normal text-studio-muted">Serial ESC/POS</span>
+                    </button>
+                    <button onclick="setPrinterMode('bluetooth')" id="pmode-bluetooth" class="pmode-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-bold flex flex-col items-center gap-1 transition">
+                        <i class="fa-brands fa-bluetooth-b"></i>
+                        <span>Bluetooth</span>
+                        <span class="text-[10px] font-normal text-studio-muted">ไร้สาย BLE</span>
+                    </button>
+                    <button onclick="setPrinterMode('network')" id="pmode-network" class="pmode-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-bold flex flex-col items-center gap-1 transition col-span-2 sm:col-span-1">
+                        <i class="fa-solid fa-network-wired"></i>
+                        <span>LAN / IP</span>
+                        <span class="text-[10px] font-normal text-studio-muted">Wi-Fi / LAN</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Mode Details -->
+            <div class="bg-studio-soft rounded-2xl p-4 border border-studio-border">
+                <div id="pconfig-driver" class="pconfig-section text-xs text-studio-ink space-y-1.5">
+                    <p class="font-bold text-emerald-700"><i class="fa-solid fa-circle-check mr-1"></i> โหมดไดรเวอร์ระบบ (OS Print Dialog) — ภาพเนียนไร้เม็ดจุด</p>
+                    <p class="text-studio-muted">ทำงานร่วมกับเครื่องพิมพ์ใบเสร็จ 80mm ทุกยี่ห้อ (เช่น EPSON TM-T82, Xprinter XP-N160II/Q200, Bixolon) โดยตั้งค่าหน้ากระดาษเป็น <strong>80mm Roll Paper</strong> และปิดระยะขอบ (Margins: None)</p>
+                </div>
+
+                <div id="pconfig-usb" class="pconfig-section hidden flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-xs font-bold">เชื่อมต่อสาย USB ตรง (WebUSB ESC/POS)</h4>
+                        <p class="text-[11px] text-studio-muted" id="usbDeviceLabel">สถานะ: ยังไม่ได้จับคู่อุปกรณ์ USB</p>
+                    </div>
+                    <button onclick="connectWebUSB()" class="px-4 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold">
+                        ค้นหาเครื่องพิมพ์ USB
+                    </button>
+                </div>
+
+                <div id="pconfig-serial" class="pconfig-section hidden flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-xs font-bold">เชื่อมต่อพอร์ต COM (WebSerial)</h4>
+                        <p class="text-[11px] text-studio-muted" id="serialDeviceLabel">สถานะ: ยังไม่ได้เปิดพอร์ต COM</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="serialBaudSelect" class="bg-white border border-studio-border rounded-xl px-2.5 py-1.5 text-xs font-mono">
+                            <option value="9600">9600</option>
+                            <option value="38400">38400</option>
+                            <option value="115200" selected>115200</option>
+                        </select>
+                        <button onclick="connectWebSerial()" class="px-4 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold">
+                            เลือกพอร์ต COM
+                        </button>
+                    </div>
+                </div>
+
+                <div id="pconfig-bluetooth" class="pconfig-section hidden flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-xs font-bold">เชื่อมต่อบลูทูธไร้สาย (WebBluetooth)</h4>
+                        <p class="text-[11px] text-studio-muted" id="btDeviceLabel">สถานะ: ยังไม่ได้เชื่อมต่อบลูทูธ</p>
+                    </div>
+                    <button onclick="connectWebBluetooth()" class="px-4 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold">
+                        สแกนหา Bluetooth POS
+                    </button>
+                </div>
+
+                <div id="pconfig-network" class="pconfig-section hidden flex flex-wrap items-center gap-2">
+                    <input type="text" id="networkHostInput" value="http://192.168.1.200:9100" class="flex-1 px-3 py-2 rounded-xl bg-white border border-studio-border text-xs font-mono">
+                    <button onclick="saveAndTestNetworkPrinter()" class="px-4 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold">
+                        บันทึก IP
+                    </button>
+                </div>
+            </div>
+
+            <!-- Paper Width & Auto-Print Options -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="p-3 rounded-2xl bg-studio-soft border border-studio-border">
+                    <label class="block text-xs font-bold text-studio-ink mb-1">ความกว้างพื้นที่พิมพ์</label>
+                    <select id="paperWidthSelect" onchange="updatePaperWidth(this.value)" class="w-full bg-white border border-studio-border rounded-xl px-2.5 py-1.5 text-xs font-semibold">
+                        <option value="72mm" selected>72mm (มาตรฐาน 80mm ไร้ขอบตก)</option>
+                        <option value="76mm">76mm (ชิดขอบ)</option>
+                        <option value="80mm">80mm (เต็มหน้ากระดาษ)</option>
+                    </select>
+                </div>
+
+                <div class="p-3 rounded-2xl bg-studio-soft border border-studio-border">
+                    <label class="block text-xs font-bold text-studio-ink mb-1">การตัดกระดาษ (ESC/POS)</label>
+                    <select id="paperCutSelect" onchange="updatePrinterHardwarePrefs()" class="w-full bg-white border border-studio-border rounded-xl px-2.5 py-1.5 text-xs font-semibold">
+                        <option value="partial" selected>ตัดอัตโนมัติ (Partial Cut)</option>
+                        <option value="full">ตัดขาดทั้งหมด (Full Cut)</option>
+                        <option value="none">ฉีกกระดาษเอง</option>
+                    </select>
+                </div>
+
+                <label class="p-3 rounded-2xl bg-studio-soft border border-studio-border flex items-center justify-between cursor-pointer">
+                    <div>
+                        <span class="block text-xs font-bold text-studio-ink">พิมพ์อัตโนมัติ</span>
+                        <span class="text-[10px] text-studio-muted">ปริ้นทันทีเมื่อถ่ายครบ</span>
+                    </div>
+                    <input type="checkbox" id="autoPrintToggle" onchange="updatePrinterHardwarePrefs()" class="accent-studio-ink w-4 h-4 rounded">
+                </label>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-studio-border">
+                <button onclick="printTestSlip()" class="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-semibold border border-amber-200 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>พิมพ์ใบทดสอบ 80mm</span>
+                </button>
+                <button onclick="closePrinterModal()" class="px-5 py-2 rounded-xl bg-studio-ink text-white text-xs font-semibold">
+                    เสร็จสิ้น
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Ready-to-Use Prompt Modal -->
+    <div id="promptModal" class="no-print fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-studio-border space-y-4">
+            <div class="flex items-center justify-between border-b border-studio-border pb-3">
+                <h3 class="text-base font-bold text-studio-ink flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-studio-gold"></i>
+                    <span>Prompt สำหรับสร้างเว็บ Photo Booth 80mm</span>
+                </h3>
+                <button onclick="closePromptModal()" class="w-8 h-8 rounded-full bg-studio-soft hover:bg-pink-100 flex items-center justify-center text-studio-ink">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <textarea id="promptTextArea" readonly rows="8" class="w-full p-3.5 rounded-2xl bg-studio-soft border border-studio-border text-xs text-studio-ink font-sans leading-relaxed focus:outline-none">สร้างเว็บแอปพลิเคชัน Photo Booth สไตล์มินิมอลเกาหลี (Clean & Minimalist Studio UX/UI) สำหรับใช้งานกับกล้องโน้ตบุ๊ก (HD Webcam) และพิมพ์ออกทางเครื่องพิมพ์ใบเสร็จความร้อนขนาด 80 มม. (80mm Thermal Receipt Printer)
+
+รายละเอียดงานที่ต้องแสดงบนใบเสร็จ:
+- ชื่องาน: Bye Nior 2026 : TEDDY MOVE ON
+- ข้อความโครงการ: เพื่อเตรียมความพร้อมในการจัดงานเลี้ยงอำลาและส่งต่อความทรงจำดีๆ
+- วันและเวลาจัดงาน: วันศุกร์ที่ 30 ตุลาคม 2569 เวลา 16:00 - 19:00 น.
+- สถานที่จัดงาน: ณ โถง อาคารพระมิ่งขวัญการศึกษาไทย ชั้น 2
+- ตกแต่งหัวใบเสร็จด้วยสัญลักษณ์ ( 🎓📜 ) TEDDY MOVE ON และลวดลายดอกบัว (Lotus Motif)
+
+ฟีเจอร์หลัก:
+1. ประมวลผลภาพขาว-ดำแบบเนียนใส (Smooth Studio Grayscale & Soft Portrait 1152px High-DPI) ไร้เม็ดจุด (No grainy dithering dots) ให้ใบหน้าสว่างเนียนและดวงตาคมชัด
+2. รองรับการถ่ายภาพ 1, 2, 3 และ 4 แอคชั่น พร้อมระบบนับถอยหลังและถ่ายซ้ำเฉพาะช่องได้
+3. รองรับการสั่งพิมพ์ออกเครื่องพิมพ์ใบเสร็จความร้อนขนาด 80mm (@page size: 80mm auto) และดาวน์โหลดเป็นไฟล์ PNG ความละเอียดสูง</textarea>
+
+            <div class="flex justify-end gap-2">
+                <button onclick="copyPromptText()" class="px-4 py-2 rounded-xl bg-studio-pinkDark hover:opacity-95 text-white text-xs font-semibold flex items-center gap-1.5">
+                    <i class="fa-regular fa-copy"></i>
+                    <span>คัดลอก Prompt</span>
+                </button>
+                <button onclick="closePromptModal()" class="px-4 py-2 rounded-xl bg-studio-soft text-studio-ink text-xs font-semibold">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // ==========================================
+        // 1. APPLICATION STATE
+        // ==========================================
+        const state = {
+            shotCount: 3,
+            capturedFrames: [],
+            isMirrored: true,
+            filterMode: 'smooth-bw',    // 'smooth-bw' | 'soft-portrait' | 'classic-film' | 'color'
+            brightness: 10,
+            contrast: 8,
+            receiptTheme: 'graduation', // 'graduation' | 'teddy' | 'ticket'
+            orderNumber: 26,
+            isCapturing: false,
+            currentStream: null,
+            audioCtx: null,
+            printer: {
+                mode: 'driver',
+                connected: true,
+                deviceName: 'OS Driver (72mm)',
+                autoPrint: false,
+                copies: 1,
+                cutMode: 'partial',
+                feedLines: 4,
+                baudRate: 115200,
+                networkHost: 'http://192.168.1.200:9100',
+                usbDevice: null,
+                usbEndpointOut: 1,
+                serialPort: null,
+                btDevice: null,
+                btCharacteristic: null
+            }
+        };
+
+        const POSE_PROMPTS = [
+            "แอคที่ 1: ยิ้มหวานๆ มองกล้องเลย! ✨",
+            "แอคที่ 2: ชู 2 นิ้ว หรือโพสท่าคู่เพื่อนซี้! ✌️🌸",
+            "แอคที่ 3: ท่าโบกมือบ๊ายบาย Bye Nior 2026! 🎓🧸",
+            "แอคที่ 4: ท่าฟรีสไตล์สุดน่ารัก ส่งท้ายความทรงจำ! 💖"
+        ];
+
+        // Toast Helper
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            const styles = {
+                success: 'bg-stone-900 text-white border-emerald-400',
+                warning: 'bg-stone-900 text-white border-amber-400',
+                error: 'bg-rose-950 text-white border-rose-400',
+                info: 'bg-stone-900 text-white border-pink-400'
+            };
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl border-l-4 text-xs font-medium transition-all duration-300 ${styles[type] || styles.info}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-pink-300"></i><div class="flex-1">${message}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        // ==========================================
+        // 2. SOUND EFFECTS (Web Audio API)
+        // ==========================================
+        function getAudioContext() {
+            if (!state.audioCtx) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) state.audioCtx = new AudioCtx();
+            }
+            if (state.audioCtx && state.audioCtx.state === 'suspended') {
+                state.audioCtx.resume();
+            }
+            return state.audioCtx;
+        }
+
+        function playBeep(freq = 880, duration = 0.1) {
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function playShutterSound() {
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const bufferSize = ctx.sampleRate * 0.06;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.22, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.06);
+                noise.connect(gain);
+                gain.connect(ctx.destination);
+                noise.start();
+            } catch (e) {}
+        }
+
+        // ==========================================
+        // 3. HD LAPTOP WEBCAM INITIALIZATION
+        // ==========================================
+        async function initCamera(deviceId = null) {
+            const video = document.getElementById('webcamVideo');
+            const fallback = document.getElementById('cameraFallback');
+
+            if (state.currentStream) {
+                state.currentStream.getTracks().forEach(t => t.stop());
+            }
+
+            const constraints = {
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 960 },
+                    ...(deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'user' })
+                },
+                audio: false
+            };
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                state.currentStream = stream;
+                video.srcObject = stream;
+                fallback.classList.add('hidden');
+                fallback.classList.remove('flex');
+                updateLiveVideoFilterStyle();
+                await populateCameraList();
+            } catch (err) {
+                fallback.classList.remove('hidden');
+                fallback.classList.add('flex');
+            }
+        }
+
+        async function populateCameraList() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(d => d.kind === 'videoinput');
+                const select = document.getElementById('cameraSelect');
+                const currentTrack = state.currentStream?.getVideoTracks()[0];
+                const activeId = currentTrack?.getSettings()?.deviceId;
+
+                select.innerHTML = '';
+                videoDevices.forEach((device, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = device.deviceId;
+                    opt.textContent = device.label || `กล้องตัวที่ ${idx + 1}`;
+                    if (device.deviceId === activeId) opt.selected = true;
+                    select.appendChild(opt);
+                });
+            } catch (e) {}
+        }
+
+        function switchCamera(deviceId) {
+            if (deviceId) initCamera(deviceId);
+        }
+
+        function toggleMirror() {
+            state.isMirrored = !state.isMirrored;
+            const video = document.getElementById('webcamVideo');
+            const btn = document.getElementById('mirrorBtn');
+            if (state.isMirrored) {
+                video.classList.add('scale-x-[-1]');
+                btn.innerHTML = `<i class="fa-solid fa-arrows-left-right text-studio-pinkDark"></i><span>กระจก: เปิด</span>`;
+            } else {
+                video.classList.remove('scale-x-[-1]');
+                btn.innerHTML = `<i class="fa-solid fa-arrows-left-right text-studio-pinkDark"></i><span>กระจก: ปิด</span>`;
+            }
+        }
+
+        function updateLiveVideoFilterStyle() {
+            const video = document.getElementById('webcamVideo');
+            if (!video) return;
+            const b = 100 + state.brightness;
+            const c = 100 + state.contrast;
+            if (state.filterMode === 'color') {
+                video.style.filter = `brightness(${b}%) contrast(${c}%)`;
+            } else if (state.filterMode === 'soft-portrait') {
+                video.style.filter = `grayscale(100%) brightness(${b + 6}%) contrast(${c - 4}%)`;
+            } else if (state.filterMode === 'classic-film') {
+                video.style.filter = `grayscale(100%) brightness(${b}%) contrast(${c + 12}%)`;
+            } else {
+                video.style.filter = `grayscale(100%) brightness(${b + 3}%) contrast(${c + 4}%)`;
+            }
+        }
+
+        // ==========================================
+        // 4. CAPTURE SESSION & DEMO GENERATOR
+        // ==========================================
+        function setShotCount(count) {
+            if (state.isCapturing) return;
+            state.shotCount = count;
+            document.querySelectorAll('.shot-mode-btn').forEach(btn => {
+                btn.className = 'shot-mode-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition text-studio-ink hover:bg-white';
+            });
+            const activeBtn = document.getElementById(`shotBtn${count}`);
+            if (activeBtn) {
+                activeBtn.className = 'shot-mode-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition bg-studio-ink text-white shadow-sm';
+            }
+            document.getElementById('shotProgressBadge').textContent = `${count} แอคชั่น`;
+
+            while (state.capturedFrames.length < count) {
+                state.capturedFrames.push(createDemoFrameCanvas(state.capturedFrames.length));
+            }
+            renderThumbnails();
+            renderReceipt();
+        }
+
+        async function startPhotoSession(singleIndexToRetake = null) {
+            if (state.isCapturing) return;
+            state.isCapturing = true;
+
+            const startBtn = document.getElementById('startCaptureBtn');
+            startBtn.disabled = true;
+            startBtn.classList.add('opacity-60');
+
+            const timerSec = parseInt(document.getElementById('timerSelect').value, 10);
+            const overlay = document.getElementById('countdownOverlay');
+            const numEl = document.getElementById('countdownNumber');
+            const subEl = document.getElementById('countdownSubtext');
+            const poseEl = document.getElementById('poseInstruction');
+
+            const indices = singleIndexToRetake !== null
+                ? [singleIndexToRetake]
+                : Array.from({ length: state.shotCount }, (_, i) => i);
+
+            for (let idx of indices) {
+                poseEl.textContent = POSE_PROMPTS[idx % POSE_PROMPTS.length];
+
+                if (timerSec > 0) {
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('flex');
+                    subEl.textContent = `แอคชั่นที่ ${idx + 1} / ${state.shotCount}`;
+
+                    for (let t = timerSec; t > 0; t--) {
+                        numEl.textContent = t;
+                        playBeep(t === 1 ? 1046 : 784, 0.1);
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                }
+
+                // Shutter Flash
+                const flash = document.getElementById('flashOverlay');
+                flash.classList.remove('camera-flash');
+                void flash.offsetWidth;
+                flash.classList.add('camera-flash');
+                playShutterSound();
+
+                state.capturedFrames[idx] = captureVideoFrame(idx);
+                renderThumbnails();
+                renderReceipt(true);
+
+                if (indices.length > 1 && idx !== indices[indices.length - 1]) {
+                    await new Promise(r => setTimeout(r, 650));
+                }
+            }
+
+            poseEl.textContent = "ถ่ายภาพเรียบร้อย! ตรวจสอบตัวอย่างใบเสร็จด้านขวาได้เลย ✨";
+            state.isCapturing = false;
+            startBtn.disabled = false;
+            startBtn.classList.remove('opacity-60');
+
+            if (state.printer.autoPrint && singleIndexToRetake === null) {
+                showToast('กำลังสั่งพิมพ์ใบเสร็จอัตโนมัติ...', 'info');
+                setTimeout(() => printThermalReceipt(), 450);
+            }
+        }
+
+        // Capture High-Resolution 960x720 Frame
+        function captureVideoFrame(shotIndex = 0) {
+            const video = document.getElementById('webcamVideo');
+            const canvas = document.createElement('canvas');
+            canvas.width = 960;
+            canvas.height = 720;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            if (state.currentStream && video.readyState >= 2) {
+                ctx.save();
+                if (state.isMirrored) {
+                    ctx.translate(canvas.width, 0);
+                    ctx.scale(-1, 1);
+                }
+                const vw = video.videoWidth || 960;
+                const vh = video.videoHeight || 720;
+                const targetAspect = 4 / 3;
+                const videoAspect = vw / vh;
+                let sx = 0, sy = 0, sw = vw, sh = vh;
+                if (videoAspect > targetAspect) {
+                    sw = vh * targetAspect;
+                    sx = (vw - sw) / 2;
+                } else {
+                    sh = vw / targetAspect;
+                    sy = (vh - sh) / 2;
+                }
+                ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+                ctx.restore();
+                return canvas;
+            } else {
+                return createDemoFrameCanvas(shotIndex);
+            }
+        }
+
+        // Clean Studio Demo Illustration Frame
+        function createDemoFrameCanvas(poseIndex = 0) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 960;
+            canvas.height = 720;
+            const ctx = canvas.getContext('2d');
+
+            // Soft Studio Gradient Backdrop
+            const grad = ctx.createRadialGradient(480, 340, 80, 480, 360, 560);
+            grad.addColorStop(0, '#ffffff');
+            grad.addColorStop(0.6, '#f5f2f3');
+            grad.addColorStop(1, '#e4dfe1');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 960, 720);
+
+            ctx.save();
+            ctx.translate(480, 410);
+
+            // Cute Teddy Bear Studio Portrait
+            ctx.fillStyle = '#8c7a78';
+            ctx.strokeStyle = '#332b2a';
+            ctx.lineWidth = 7;
+
+            // Ears
+            [-120, 120].forEach(ex => {
+                ctx.beginPath();
+                ctx.arc(ex, -135, 50, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#dfd5d3';
+                ctx.beginPath();
+                ctx.arc(ex, -135, 25, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#8c7a78';
+            });
+
+            // Body
+            ctx.beginPath();
+            ctx.ellipse(0, 165, 165, 150, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Head
+            ctx.beginPath();
+            ctx.arc(0, -30, 138, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Snout
+            ctx.fillStyle = '#f7f4f3';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 58, 44, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Nose
+            ctx.fillStyle = '#2b2423';
+            ctx.beginPath();
+            ctx.ellipse(0, -10, 22, 15, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            [-54, 54].forEach(x => {
+                ctx.fillStyle = '#2b2423';
+                ctx.beginPath();
+                ctx.arc(x, -50, 14, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(x - 4, -55, 5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Smile
+            ctx.beginPath();
+            ctx.arc(-15, 14, 15, 0, Math.PI);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(15, 14, 15, 0, Math.PI);
+            ctx.stroke();
+
+            // Graduation Mortarboard Cap
+            ctx.fillStyle = '#262122';
+            ctx.beginPath();
+            ctx.moveTo(0, -215);
+            ctx.lineTo(135, -165);
+            ctx.lineTo(0, -115);
+            ctx.lineTo(-135, -165);
+            ctx.closePath();
+            ctx.fill();
+
+            // Signboard
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(-190, 105, 380, 95);
+            ctx.strokeRect(-190, 105, 380, 95);
+            ctx.fillStyle = '#262122';
+            ctx.font = 'bold 36px "Kanit", sans-serif';
+            ctx.textAlign = 'center';
+            const titles = ['TEDDY MOVE ON', 'BYE NIOR 2026', 'CLASS OF 2026', 'KEEP SMILING'];
+            ctx.fillText(titles[poseIndex % 4], 0, 165);
+
+            ctx.restore();
+            return canvas;
+        }
+
+        function generateDemoPhotos() {
+            state.capturedFrames = [];
+            for (let i = 0; i < 4; i++) {
+                state.capturedFrames.push(createDemoFrameCanvas(i));
+            }
+            renderThumbnails();
+            renderReceipt(true);
+        }
+
+        function handleImageUpload(event) {
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
+
+            files.slice(0, 4).forEach((file, idx) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const c = document.createElement('canvas');
+                        c.width = 960;
+                        c.height = 720;
+                        const ctx = c.getContext('2d');
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+                        const targetAspect = 4 / 3;
+                        const imgAspect = img.width / img.height;
+                        let sx = 0, sy = 0, sw = img.width, sh = img.height;
+                        if (imgAspect > targetAspect) {
+                            sw = img.height * targetAspect;
+                            sx = (img.width - sw) / 2;
+                        } else {
+                            sh = img.width / targetAspect;
+                            sy = (img.height - sh) / 2;
+                        }
+                        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, 960, 720);
+                        state.capturedFrames[idx] = c;
+                        renderThumbnails();
+                        renderReceipt(true);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderThumbnails() {
+            const container = document.getElementById('thumbnailsContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i < state.shotCount; i++) {
+                const frame = state.capturedFrames[i];
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative group rounded-xl overflow-hidden border border-studio-border bg-stone-100 aspect-[4/3] cursor-pointer hover:border-studio-pinkDark transition';
+                wrapper.onclick = () => startPhotoSession(i);
+
+                if (frame) {
+                    const img = document.createElement('img');
+                    img.src = frame.toDataURL('image/jpeg', 0.85);
+                    img.className = 'w-full h-full object-cover';
+                    wrapper.appendChild(img);
+                }
+
+                const overlay = document.createElement('div');
+                overlay.className = 'absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white text-[11px] font-medium';
+                overlay.innerHTML = `<i class="fa-solid fa-camera-rotate mb-0.5"></i><span>ถ่ายใหม่ #${i + 1}</span>`;
+                wrapper.appendChild(overlay);
+
+                const badge = document.createElement('span');
+                badge.className = 'absolute top-1.5 left-1.5 bg-black/55 backdrop-blur-sm text-white text-[10px] font-medium px-1.5 py-0.5 rounded-md';
+                badge.textContent = `#${i + 1}`;
+                wrapper.appendChild(badge);
+
+                container.appendChild(wrapper);
+            }
+        }
+
+        // ==========================================
+        // 5. SMOOTH STUDIO PHOTO TONE ENGINE (NO GRAINY DOTS!)
+        // ==========================================
+        function setFilterMode(mode) {
+            state.filterMode = mode;
+            const labels = {
+                'smooth-bw': '✨ ขาวดำเนียนใส<br><span class="text-[10px] font-normal opacity-80">ไร้เม็ดจุด (แนะนำ)</span>',
+                'soft-portrait': '🌸 พอร์ตเทรตผิวใส<br><span class="text-[10px] font-normal text-studio-muted">หน้าสว่างเนียนนุ่ม</span>',
+                'classic-film': '🎞️ ฟิล์มโมโนโครม<br><span class="text-[10px] font-normal text-studio-muted">คมเข้มมีมิติ</span>',
+                'color': '🎨 ภาพสีธรรมชาติ<br><span class="text-[10px] font-normal text-studio-muted">สำหรับเซฟไฟล์ PNG</span>'
+            };
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const m = btn.id.replace('filter-', '');
+                btn.className = 'filter-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink hover:bg-pink-50 text-xs font-semibold text-center transition';
+                btn.innerHTML = labels[m];
+            });
+
+            const active = document.getElementById(`filter-${mode}`);
+            if (active) {
+                active.className = 'filter-btn p-2.5 rounded-2xl border-2 border-studio-ink bg-studio-ink text-white text-xs font-semibold text-center transition shadow-sm';
+            }
+
+            updateLiveVideoFilterStyle();
+            renderReceipt();
+        }
+
+        function updateFilterParams() {
+            state.brightness = parseInt(document.getElementById('brightnessSlider').value, 10);
+            state.contrast = parseInt(document.getElementById('contrastSlider').value, 10);
+            document.getElementById('brightnessVal').textContent = (state.brightness >= 0 ? '+' : '') + state.brightness;
+            document.getElementById('contrastVal').textContent = (state.contrast >= 0 ? '+' : '') + state.contrast;
+            updateLiveVideoFilterStyle();
+            renderReceipt();
+        }
+
+        function resetSliders() {
+            document.getElementById('brightnessSlider').value = 10;
+            document.getElementById('contrastSlider').value = 8;
+            updateFilterParams();
+        }
+
+        function setReceiptTheme(theme) {
+            state.receiptTheme = theme;
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.className = 'theme-btn p-2 rounded-xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-semibold text-center transition';
+            });
+            const active = document.getElementById(`theme-${theme}`);
+            if (active) {
+                active.className = 'theme-btn p-2 rounded-xl border-2 border-studio-ink bg-pink-50/70 text-studio-ink text-xs font-semibold text-center transition';
+            }
+            renderReceipt(true);
+        }
+
+        // Smooth 256-Level Continuous Tone Processing (Zero Stipple / Zero Grainy Dots)
+        function processPhotoSmoothStudio(sourceCanvas, targetWidth, targetHeight) {
+            const outCanvas = document.createElement('canvas');
+            outCanvas.width = targetWidth;
+            outCanvas.height = targetHeight;
+            const ctx = outCanvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            // Draw high-resolution photo smoothly
+            ctx.drawImage(sourceCanvas, 0, 0, targetWidth, targetHeight);
+
+            const imgData = ctx.getImageData(0, 0, targetWidth, targetHeight);
+            const data = imgData.data;
+
+            const brightnessOffset = state.brightness * 1.8;
+            const contrastVal = state.contrast + (state.filterMode === 'classic-film' ? 14 : state.filterMode === 'soft-portrait' ? -4 : 4);
+            const contrastFactor = (259 * (contrastVal + 255)) / (255 * (259 - contrastVal));
+            // Gentle gamma lift so webcam faces & eyes look bright and natural
+            const gamma = state.filterMode === 'soft-portrait' ? 0.82 : state.filterMode === 'classic-film' ? 0.95 : 0.88;
+
+            // Precompute 256-level lookup table for ultra-smooth tonal transitions
+            const lut = new Uint8ClampedArray(256);
+            for (let i = 0; i < 256; i++) {
+                let v = 255 * Math.pow(i / 255, gamma);
+                v += brightnessOffset;
+                v = contrastFactor * (v - 128) + 128;
+                // Soft highlight roll-off so bright skin doesn't clip harshly
+                if (v > 235) {
+                    v = 235 + (v - 235) * 0.45;
+                }
+                lut[i] = Math.max(0, Math.min(255, Math.round(v)));
+            }
+
+            if (state.filterMode === 'color') {
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = lut[data[i]];
+                    data[i + 1] = lut[data[i + 1]];
+                    data[i + 2] = lut[data[i + 2]];
+                }
+            } else {
+                // Smooth Studio Monochrome (Weighted green/red luminance for flattering skin tones)
+                for (let i = 0; i < data.length; i += 4) {
+                    const lum = Math.round(0.32 * data[i] + 0.58 * data[i + 1] + 0.10 * data[i + 2]);
+                    const smoothGray = lut[lum];
+                    data[i] = smoothGray;
+                    data[i + 1] = smoothGray;
+                    data[i + 2] = smoothGray;
+                }
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+            return outCanvas;
+        }
+
+        // ==========================================
+        // 6. HIGH-RESOLUTION 80MM RECEIPT COMPOSITOR (1152px 2x Scale)
+        // ==========================================
+        // Draw emblem from user's poster: ( Graduation Cap + Scroll ) & Lotus Motifs
+        function drawPosterHeaderArtwork(ctx, centerX, topY, theme) {
+            ctx.save();
+            ctx.translate(centerX, topY);
+            ctx.strokeStyle = '#111111';
+            ctx.fillStyle = '#111111';
+
+            // Golden-style Parentheses (   ) around Graduation Cap
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.arc(-115, 38, 42, 0.72 * Math.PI, 1.28 * Math.PI);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(115, 38, 42, -0.28 * Math.PI, 0.28 * Math.PI);
+            ctx.stroke();
+
+            // Mortarboard Graduation Cap
+            ctx.beginPath();
+            ctx.moveTo(0, -6);
+            ctx.lineTo(78, 20);
+            ctx.lineTo(0, 46);
+            ctx.lineTo(-78, 20);
+            ctx.closePath();
+            ctx.fill();
+
+            // Cap Skull Base
+            ctx.beginPath();
+            ctx.moveTo(-42, 34);
+            ctx.lineTo(-42, 62);
+            ctx.quadraticCurveTo(0, 76, 42, 62);
+            ctx.lineTo(42, 34);
+            ctx.closePath();
+            ctx.fill();
+
+            // Tassel hanging left
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, 20);
+            ctx.lineTo(-34, 32);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#111111';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(-34, 32);
+            ctx.lineTo(-40, 68);
+            ctx.stroke();
+
+            // Rolled Diploma Scroll with Ribbon Bow in front of Cap
+            ctx.save();
+            ctx.translate(18, 64) ;
+            ctx.rotate(-0.18);
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#111111';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.roundRect(-48, -11, 96, 22, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Scroll Ribbon Bow
+            ctx.fillStyle = '#111111';
+            ctx.fillRect(-6, -11, 12, 22);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-16, 18);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(14, 18);
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.restore();
+        }
+
+        // Draw Delicate Lotus Corner Motifs (Inspired by the bottom corners of the poster)
+        function drawLotusDivider(ctx, centerX, y) {
+            ctx.save();
+            ctx.translate(centerX, y);
+            ctx.strokeStyle = '#111111';
+            ctx.fillStyle = '#ffffff';
+            ctx.lineWidth = 3;
+
+            // Side lines
+            ctx.beginPath();
+            ctx.moveTo(-460, 0);
+            ctx.lineTo(-75, 0);
+            ctx.moveTo(75, 0);
+            ctx.lineTo(460, 0);
+            ctx.stroke();
+
+            // Center Lotus Blossom
+            const petals = [-0.65, -0.32, 0, 0.32, 0.65];
+            petals.forEach(angle => {
+                ctx.save();
+                ctx.rotate(angle);
+                ctx.beginPath();
+                ctx.moveTo(0, 8);
+                ctx.quadraticCurveTo(-12, -10, 0, -24);
+                ctx.quadraticCurveTo(12, -10, 0, 8);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            });
+
+            ctx.restore();
+        }
+
+        function drawThinDashedLine(ctx, y, width = 1152, margin = 64) {
+            ctx.save();
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([10, 8]);
+            ctx.beginPath();
+            ctx.moveTo(margin, y);
+            ctx.lineTo(width - margin, y);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let currentY = y;
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+                    ctx.fillText(line.trim(), x, currentY);
+                    line = words[n] + ' ';
+                    currentY += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line.trim(), x, currentY);
+            return currentY + lineHeight;
+        }
+
+        // Master High-Resolution Receipt Renderer (Width: 1152px = 2x Supersampled 576px)
+        function renderReceipt(animateSlide = false) {
+            const canvas = document.getElementById('receiptCanvas');
+            const ctx = canvas.getContext('2d');
+            const W = 1152;
+            const PAD = 56;
+            const INNER_W = W - PAD * 2; // 1040px
+
+            const showItems = document.getElementById('showItemsToggle').checked;
+            const showStickers = document.getElementById('showFrameStickersToggle').checked;
+            const guestName = document.getElementById('guestNameInput').value.trim() || 'TEDDY CLASS OF 2026';
+            const customQuote = document.getElementById('customQuoteInput').value.trim();
+
+            const frameW = INNER_W - 48; // 992px
+            const frameH = Math.round((frameW * 3) / 4); // 744px
+            const photoGap = 32;
+
+            let totalHeight = 520; // Clean Header + Event Details
+            totalHeight += state.shotCount * (frameH + photoGap) + 30;
+            if (showItems) totalHeight += 360;
+            if (customQuote) totalHeight += 160;
+            totalHeight += 310; // Barcode + Footer
+
+            canvas.width = W;
+            canvas.height = totalHeight;
+
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            // Pure White Paper
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, W, totalHeight);
+
+            // Outer Minimal Frame Border
+            ctx.strokeStyle = '#111111';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(PAD, 36, INNER_W, totalHeight - 72);
+
+            let curY = 74;
+
+            // 1. Poster Graduation Cap & Scroll Emblem: ( 🎓📜 )
+            drawPosterHeaderArtwork(ctx, W / 2, curY, state.receiptTheme);
+            curY += 126;
+
+            // 2. Main Poster Title: TEDDY MOVE ON
+            ctx.fillStyle = '#111111';
+            ctx.textAlign = 'center';
+            ctx.font = '700 64px "Kanit", sans-serif';
+            ctx.fillText('TEDDY MOVE ON', W / 2, curY);
+            curY += 48;
+
+            // Subtitle Pill: BYE NIOR 2026
+            ctx.font = '600 28px "Space Mono", "Kanit", monospace';
+            ctx.fillText('• BYE NIOR 2026 FAREWELL PHOTO BOOTH •', W / 2, curY);
+            curY += 42;
+
+            // Exact Event Details from User Prompt
+            ctx.font = '500 24px "Kanit", sans-serif';
+            ctx.fillText('วันศุกร์ที่ 30 ตุลาคม 2569  |  เวลา 16:00 - 19:00 น.', W / 2, curY);
+            curY += 34;
+            ctx.font = '400 23px "Kanit", sans-serif';
+            ctx.fillText('ณ โถง อาคารพระมิ่งขวัญการศึกษาไทย ชั้น 2', W / 2, curY);
+            curY += 38;
+
+            drawLotusDivider(ctx, W / 2, curY);
+            curY += 44;
+
+            // 3. Receipt Metadata Bar
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+            const orderStr = `#${String(state.orderNumber).padStart(3, '0')}`;
+
+            ctx.font = '600 25px "Space Mono", "Kanit", monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText(`NO: ${orderStr}  •  ${guestName.substring(0, 26)}`, PAD + 28, curY);
+            ctx.textAlign = 'right';
+            ctx.fillText(`${dateStr} ${timeStr}`, W - PAD - 28, curY);
+            curY += 26;
+
+            // 4. HIGH-RES SMOOTH PHOTO STRIP FRAMES (NO GRAINY DOTS!)
+            const frameX = PAD + 24;
+            for (let i = 0; i < state.shotCount; i++) {
+                const rawFrame = state.capturedFrames[i] || createDemoFrameCanvas(i);
+                const smoothPhoto = processPhotoSmoothStudio(rawFrame, frameW, frameH);
+
+                // Clean sleek photo border
+                ctx.fillStyle = '#111111';
+                ctx.fillRect(frameX - 4, curY - 4, frameW + 8, frameH + 8);
+                ctx.drawImage(smoothPhoto, frameX, curY, frameW, frameH);
+
+                if (showStickers) {
+                    ctx.fillStyle = 'rgba(17, 17, 17, 0.85)';
+                    ctx.fillRect(frameX + 16, curY + 16, 130, 40);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 22px "Space Mono", monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`SHOT 0${i + 1}`, frameX + 81, curY + 43);
+                }
+
+                curY += frameH + photoGap;
+            }
+
+            curY += 8;
+            drawThinDashedLine(ctx, curY, W, PAD + 24);
+            curY += 44;
+
+            // 5. Memory Receipt Checklist
+            if (showItems) {
+                ctx.fillStyle = '#111111';
+                ctx.font = 'bold 25px "Space Mono", "Kanit", monospace';
+                ctx.textAlign = 'left';
+                ctx.fillText('ITEM DESCRIPTION', PAD + 28, curY);
+                ctx.textAlign = 'right';
+                ctx.fillText('VALUE', W - PAD - 28, curY);
+                curY += 20;
+
+                drawThinDashedLine(ctx, curY, W, PAD + 24);
+                curY += 42;
+
+                const items = [
+                    ['01x  งานเลี้ยงอำลา Bye Nior 2026', 'CONFIRMED'],
+                    ['99x  ส่งต่อความทรงจำดีๆ & มิตรภาพ', 'PRICELESS'],
+                    ['01x  อ้อมกอดหมีน้อย TEDDY MOVE ON', '100% LOVE'],
+                    ['∞    ก้าวต่อไปสู่อนาคตที่สดใส', 'FOREVER']
+                ];
+
+                ctx.font = '500 25px "Kanit", "Space Mono", sans-serif';
+                items.forEach(([desc, val]) => {
+                    ctx.textAlign = 'left';
+                    ctx.fillText(desc, PAD + 28, curY);
+                    ctx.textAlign = 'right';
+                    ctx.font = 'bold 24px "Space Mono", monospace';
+                    ctx.fillText(val, W - PAD - 28, curY);
+                    ctx.font = '500 25px "Kanit", "Space Mono", sans-serif';
+                    curY += 46;
+                });
+
+                curY += 10;
+                drawThinDashedLine(ctx, curY, W, PAD + 24);
+                curY += 46;
+            }
+
+            // 6. Custom Quote / Farewell Note
+            if (customQuote) {
+                ctx.fillStyle = '#111111';
+                ctx.textAlign = 'center';
+                ctx.font = '600 30px "Mali", "Kanit", sans-serif';
+                wrapCanvasText(ctx, `“ ${customQuote} ”`, W / 2, curY + 12, INNER_W - 80, 42);
+                curY += 95;
+            }
+
+            // 7. Event Purpose Line + Clean Barcode
+            ctx.fillStyle = '#333333';
+            ctx.font = '400 21px "Kanit", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('เพื่อเตรียมความพร้อมในการจัดงานเลี้ยงอำลาและส่งต่อความทรงจำดีๆ', W / 2, curY);
+            curY += 34;
+
+            drawReceiptBarcode(ctx, W / 2, curY, 620, 76);
+            curY += 106;
+
+            ctx.fillStyle = '#111111';
+            ctx.font = 'bold 24px "Space Mono", monospace';
+            ctx.fillText('* BYE NIOR 2026 • TEDDY MOVE ON *', W / 2, curY);
+
+            // Sync with Print Image
+            const printImg = document.getElementById('print-final-image');
+            if (printImg) {
+                printImg.src = canvas.toDataURL('image/png');
+            }
+
+            if (animateSlide) {
+                const wrapper = document.getElementById('receiptPaperWrapper');
+                wrapper.classList.remove('animate-print');
+                void wrapper.offsetWidth;
+                wrapper.classList.add('animate-print');
+            }
+        }
+
+        function drawReceiptBarcode(ctx, centerX, topY, width, height) {
+            ctx.save();
+            const startX = centerX - width / 2;
+            ctx.fillStyle = '#111111';
+            const pattern = [4, 2, 2, 3, 5, 2, 2, 2, 4, 3, 2, 2, 4, 2, 3, 2, 5, 2, 2, 4, 2, 2, 5, 3, 2, 2, 4];
+            let x = startX;
+            let i = 0;
+            while (x < startX + width) {
+                const barW = pattern[i % pattern.length] * 3.5;
+                if (i % 2 === 0 && x + barW <= startX + width) {
+                    ctx.fillRect(x, topY, barW, height);
+                }
+                x += barW;
+                i++;
+            }
+            ctx.restore();
+        }
+
+        // ==========================================
+        // 7. PRINTER & MODAL CONTROLS
+        // ==========================================
+        function openPrinterModal() {
+            const modal = document.getElementById('printerModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closePrinterModal() {
+            const modal = document.getElementById('printerModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openPromptModal() {
+            const modal = document.getElementById('promptModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closePromptModal() {
+            const modal = document.getElementById('promptModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function copyPromptText() {
+            const textarea = document.getElementById('promptTextArea');
+            textarea.select();
+            document.execCommand('copy');
+            showToast('คัดลอก Prompt เรียบร้อยแล้ว!', 'success');
+        }
+
+        function updatePaperWidth(val) {
+            document.documentElement.style.setProperty('--print-width', val);
+            document.getElementById('dockModeBadge').innerHTML = `<i class="fa-solid fa-gear text-[10px]"></i><span>${state.printer.mode.toUpperCase()} • ${val}</span>`;
+        }
+
+        function bumpOrderNumber() {
+            state.orderNumber++;
+            document.getElementById('orderNumBadge').textContent = `#${String(state.orderNumber).padStart(3, '0')}`;
+            renderReceipt(true);
+        }
+
+        function setPrinterMode(mode) {
+            state.printer.mode = mode;
+            document.querySelectorAll('.pmode-btn').forEach(btn => {
+                btn.className = 'pmode-btn p-2.5 rounded-2xl border border-studio-border bg-studio-soft text-studio-ink text-xs font-bold flex flex-col items-center gap-1 transition';
+            });
+            const activeBtn = document.getElementById(`pmode-${mode}`);
+            if (activeBtn) {
+                activeBtn.className = 'pmode-btn p-2.5 rounded-2xl border-2 border-studio-ink bg-studio-ink text-white text-xs font-bold flex flex-col items-center gap-1 transition';
+            }
+            document.querySelectorAll('.pconfig-section').forEach(sec => sec.classList.add('hidden'));
+            const activeSec = document.getElementById(`pconfig-${mode}`);
+            if (activeSec) activeSec.classList.remove('hidden');
+
+            const widthVal = document.getElementById('paperWidthSelect').value;
+            document.getElementById('dockModeBadge').innerHTML = `<i class="fa-solid fa-gear text-[10px]"></i><span>${mode.toUpperCase()} • ${widthVal}</span>`;
+        }
+
+        function updatePrinterHardwarePrefs() {
+            state.printer.autoPrint = document.getElementById('autoPrintToggle').checked;
+            state.printer.cutMode = document.getElementById('paperCutSelect').value;
+        }
+
+        async function connectWebUSB() {
+            if (!navigator.usb) {
+                showToast('เบราว์เซอร์นี้ไม่รองรับ WebUSB (แนะนำให้ใช้ Chrome หรือ OS Driver)', 'warning');
+                return;
+            }
+            try {
+                const device = await navigator.usb.requestDevice({ filters: [] });
+                await device.open();
+                if (device.configuration === null) await device.selectConfiguration(1);
+                await device.claimInterface(0);
+                state.printer.usbDevice = device;
+                state.printer.deviceName = device.productName || 'USB 80mm POS';
+                document.getElementById('usbDeviceLabel').textContent = `เชื่อมต่อแล้ว: ${state.printer.deviceName}`;
+                showToast(`เชื่อมต่อ ${state.printer.deviceName} สำเร็จ`, 'success');
+            } catch (e) {
+                showToast('ยกเลิกการเชื่อมต่อ USB', 'info');
+            }
+        }
+
+        async function connectWebSerial() {
+            if (!navigator.serial) {
+                showToast('เบราว์เซอร์นี้ไม่รองรับ WebSerial', 'warning');
+                return;
+            }
+            try {
+                const baudRate = parseInt(document.getElementById('serialBaudSelect').value, 10) || 115200;
+                const port = await navigator.serial.requestPort();
+                await port.open({ baudRate });
+                state.printer.serialPort = port;
+                document.getElementById('serialDeviceLabel').textContent = `เชื่อมต่อพอร์ต COM (${baudRate} bps) สำเร็จ`;
+                showToast('เชื่อมต่อพอร์ต COM สำเร็จ', 'success');
+            } catch (e) {
+                showToast('ไม่สามารถเปิดพอร์ต COM ได้', 'warning');
+            }
+        }
+
+        async function connectWebBluetooth() {
+            if (!navigator.bluetooth) {
+                showToast('เบราว์เซอร์นี้ไม่รองรับ WebBluetooth', 'warning');
+                return;
+            }
+            try {
+                const device = await navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true,
+                    optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb']
+                });
+                const server = await device.gatt.connect();
+                const services = await server.getPrimaryServices();
+                for (const s of services) {
+                    const chars = await s.getCharacteristics();
+                    const writeChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse);
+                    if (writeChar) {
+                        state.printer.btCharacteristic = writeChar;
+                        break;
+                    }
+                }
+                document.getElementById('btDeviceLabel').textContent = `เชื่อมต่อบลูทูธ: ${device.name || 'POS Printer'}`;
+                showToast('เชื่อมต่อบลูทูธสำเร็จ', 'success');
+            } catch (e) {
+                showToast('ยกเลิกการเชื่อมต่อบลูทูธ', 'info');
+            }
+        }
+
+        function saveAndTestNetworkPrinter() {
+            const host = document.getElementById('networkHostInput').value.trim();
+            state.printer.networkHost = host;
+            showToast(`บันทึก IP ${host} เรียบร้อย`, 'success');
+        }
+
+        // Main Print Function
+        function printThermalReceipt() {
+            renderReceipt(false);
+            const canvas = document.getElementById('receiptCanvas');
+            const printImg = document.getElementById('print-final-image');
+            if (printImg) {
+                printImg.src = canvas.toDataURL('image/png');
+            }
+            setTimeout(() => {
+                window.print();
+            }, 200);
+        }
+
+        function printTestSlip() {
+            printThermalReceipt();
+        }
+
+        function downloadReceiptImage() {
+            const canvas = document.getElementById('receiptCanvas');
+            const link = document.createElement('a');
+            const orderStr = String(state.orderNumber).padStart(3, '0');
+            link.download = `ByeNior2026-TeddyMoveOn-${orderStr}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('บันทึกรูปภาพใบเสร็จความละเอียดสูงเรียบร้อย!', 'success');
+        }
+
+        function toggleKioskMode() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        window.onload = function() {
+            updatePaperWidth('72mm');
+            generateDemoPhotos();
+            initCamera();
+        };
+    </script>
+</body>
+</html>

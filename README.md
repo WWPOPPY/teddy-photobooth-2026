@@ -1,1 +1,0 @@
-# teddy-photobooth-2026

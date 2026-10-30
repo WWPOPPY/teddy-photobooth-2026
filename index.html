@@ -1527,11 +1527,11 @@
             const guestName = document.getElementById('guestNameInput').value.trim() || 'TEDDY CLASS OF 2026';
             const customQuote = document.getElementById('customQuoteInput').value.trim();
 
-            const photoColumns = state.shotCount >= 3 ? 2 : 1;
-            const photoRows = Math.ceil(state.shotCount / photoColumns);
             const photoGap = 16;
-            const frameW = W / photoColumns;
-            const frameH = frameW * 3 / 4;
+            const frameH = state.shotCount >= 3
+                ? Math.floor((PAGE_HEIGHT - 1050 - (state.shotCount - 1) * photoGap) / state.shotCount)
+                : W * 3 / 4;
+            const frameW = frameH * 4 / 3;
 
             canvas.width = W;
             canvas.height = PAGE_HEIGHT;
@@ -1589,11 +1589,8 @@
             for (let i = 0; i < state.shotCount; i++) {
                 const rawFrame = state.capturedFrames[i] || createDemoFrameCanvas(i);
                 const processedPhoto = processPhotoSmoothStudio(rawFrame, frameW, frameH);
-                const row = Math.floor(i / photoColumns);
-                const column = i % photoColumns;
-                const isSinglePhotoLastRow = state.shotCount % photoColumns === 1 && row === photoRows - 1;
-                const frameX = isSinglePhotoLastRow ? (W - frameW) / 2 : column * frameW;
-                const frameY = curY + row * (frameH + photoGap);
+                const frameX = (W - frameW) / 2;
+                const frameY = curY + i * (frameH + photoGap);
 
                 ctx.drawImage(processedPhoto, frameX, frameY, frameW, frameH);
 
@@ -1607,7 +1604,7 @@
                 }
             }
 
-            curY += photoRows * frameH + (photoRows - 1) * photoGap + 8;
+            curY += state.shotCount * frameH + (state.shotCount - 1) * photoGap + 8;
             drawThinDashedLine(ctx, curY, W, PAD);
             curY += 32;
 

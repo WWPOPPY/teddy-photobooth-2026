@@ -97,11 +97,12 @@
         /* STRICT 80MM THERMAL RECEIPT PRINT RULES */
         @media print {
             @page {
-                size: 80mm auto;
+                size: 80mm 210mm;
                 margin: 0mm !important;
             }
             html, body {
                 width: 80mm !important;
+                height: 210mm !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 background: #ffffff !important;
@@ -114,14 +115,15 @@
             }
             #print-only-container {
                 display: block !important;
-                width: var(--print-width, 72mm) !important;
-                margin: 0 auto !important;
+                width: 80mm !important;
+                height: 210mm !important;
+                margin: 0 !important;
                 padding: 0 !important;
                 background: #ffffff !important;
             }
             #print-only-container img {
-                width: 100% !important;
-                height: auto !important;
+                width: 80mm !important;
+                height: 210mm !important;
                 display: block !important;
                 image-rendering: auto !important;
             }
@@ -325,7 +327,7 @@
                     </div>
                     <button onclick="openPrinterSettings()" id="dockModeBadge" class="text-[11px] font-medium text-studio-pinkDark hover:underline flex items-center gap-1">
                         <i class="fa-solid fa-gear text-[10px]"></i>
-                        <span>OS Driver • 72mm</span>
+                        <span>OS Driver • 80 × 210mm</span>
                     </button>
                 </div>
 
@@ -334,12 +336,11 @@
 
                 <!-- Smooth High-Res Receipt Paper Container -->
                 <div class="w-full bg-stone-100/70 p-3 sm:p-4 rounded-2xl border border-stone-200/70 flex flex-col items-center">
-                    <div id="receiptPaperWrapper" class="w-full max-w-[320px] shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all">
-                        <div class="bg-white">
-                            <!-- High-Resolution 2x Canvas (1152px width = ultra-smooth text & photos for 80mm print) -->
-                            <canvas id="receiptCanvas" width="1152" height="2400" class="w-full h-auto block bg-white"></canvas>
+                    <div id="receiptPaperWrapper" class="w-full max-w-[320px] aspect-[80/210] shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all">
+                        <div class="bg-white h-full">
+                            <!-- Fixed 80 x 210mm page at high resolution -->
+                            <canvas id="receiptCanvas" width="1152" height="3024" class="w-full h-full block bg-white"></canvas>
                         </div>
-                        <div class="receipt-zigzag-bottom"></div>
                     </div>
                 </div>
 
@@ -347,7 +348,7 @@
                 <div class="w-full mt-4 space-y-2.5">
                     <button onclick="printThermalReceipt()" class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-studio-pinkDark to-studio-pink hover:opacity-95 text-white font-bold text-sm shadow-md hover:shadow-lg active:scale-[0.99] transition flex items-center justify-center gap-2.5">
                         <i class="fa-solid fa-print text-base"></i>
-                        <span>สั่งปริ้นใบเสร็จ 80mm (Print Receipt)</span>
+                        <span>สั่งปริ้นขนาด 80 × 210mm (Print)</span>
                     </button>
 
                     <div class="grid grid-cols-2 gap-2.5">
@@ -617,15 +618,11 @@
                 </div>
             </div>
 
-            <!-- Paper Width & Auto-Print Options -->
+            <!-- Fixed Paper Size & Auto-Print Options -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div class="p-3 rounded-2xl bg-studio-soft border border-studio-border">
-                    <label class="block text-xs font-bold text-studio-ink mb-1">ความกว้างพื้นที่พิมพ์</label>
-                    <select id="paperWidthSelect" onchange="updatePaperWidth(this.value)" class="w-full bg-white border border-studio-border rounded-xl px-2.5 py-1.5 text-xs font-semibold">
-                        <option value="72mm" selected>72mm (มาตรฐาน 80mm ไร้ขอบตก)</option>
-                        <option value="76mm">76mm (ชิดขอบ)</option>
-                        <option value="80mm">80mm (เต็มหน้ากระดาษ)</option>
-                    </select>
+                    <label class="block text-xs font-bold text-studio-ink mb-1">ขนาดกระดาษ (กำหนดตายตัว)</label>
+                    <div class="w-full bg-white border border-studio-border rounded-xl px-2.5 py-1.5 text-xs font-semibold">80 × 210mm</div>
                 </div>
 
                 <div class="p-3 rounded-2xl bg-studio-soft border border-studio-border">
@@ -719,7 +716,7 @@
             printer: {
                 mode: 'driver',
                 connected: true,
-                deviceName: 'OS Driver (72mm)',
+                deviceName: 'OS Driver (80 × 210mm)',
                 autoPrint: false,
                 copies: 1,
                 cutMode: 'partial',
@@ -839,8 +836,9 @@
 
             const constraints = {
                 video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 960 },
+                    width: { ideal: 960 },
+                    height: { ideal: 720 },
+                    aspectRatio: { ideal: 4 / 3 },
                     ...(deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'user' })
                 },
                 audio: false
@@ -996,7 +994,7 @@
             }
         }
 
-        // Capture High-Resolution 960x720 Frame
+        // Capture High-Resolution 4:3 Frame
         function captureVideoFrame(shotIndex = 0) {
             const video = document.getElementById('webcamVideo');
             const canvas = document.createElement('canvas');
@@ -1520,67 +1518,59 @@
             const canvas = document.getElementById('receiptCanvas');
             const ctx = canvas.getContext('2d');
             const W = 1152;
-            const PAD = 56;
-            const INNER_W = W - PAD * 2; // 1040px
+            const PAGE_HEIGHT = 3024;
+            const PAD = 28;
+            const INNER_W = W;
 
             const showItems = document.getElementById('showItemsToggle').checked;
             const showStickers = document.getElementById('showFrameStickersToggle').checked;
             const guestName = document.getElementById('guestNameInput').value.trim() || 'TEDDY CLASS OF 2026';
             const customQuote = document.getElementById('customQuoteInput').value.trim();
 
-            const frameW = INNER_W - 48; // 992px
-            const frameH = Math.round((frameW * 3) / 4); // 744px
-            const photoGap = 32;
-
-            let totalHeight = 520; // Clean Header + Event Details
-            totalHeight += state.shotCount * (frameH + photoGap) + 30;
-            if (showItems) totalHeight += 360;
-            if (customQuote) totalHeight += 160;
-            totalHeight += 310; // Barcode + Footer
+            const photoColumns = state.shotCount >= 3 ? 2 : 1;
+            const photoRows = Math.ceil(state.shotCount / photoColumns);
+            const photoGap = 16;
+            const frameW = W / photoColumns;
+            const frameH = frameW * 3 / 4;
 
             canvas.width = W;
-            canvas.height = totalHeight;
+            canvas.height = PAGE_HEIGHT;
 
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
 
             // Pure White Paper
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, W, totalHeight);
+            ctx.fillRect(0, 0, W, PAGE_HEIGHT);
 
-            // Outer Minimal Frame Border
-            ctx.strokeStyle = '#111111';
-            ctx.lineWidth = 4;
-            ctx.strokeRect(PAD, 36, INNER_W, totalHeight - 72);
-
-            let curY = 74;
+            let curY = 28;
 
             // 1. Poster Graduation Cap & Scroll Emblem: ( 🎓📜 )
             drawPosterHeaderArtwork(ctx, W / 2, curY, state.receiptTheme);
-            curY += 126;
+            curY += 102;
 
             // 2. Main Poster Title: TEDDY MOVE ON
             ctx.fillStyle = '#111111';
             ctx.textAlign = 'center';
-            ctx.font = '700 64px "Kanit", sans-serif';
+            ctx.font = '700 72px "Kanit", sans-serif';
             ctx.fillText('TEDDY MOVE ON', W / 2, curY);
             curY += 48;
 
             // Subtitle Pill: BYE NIOR 2026
-            ctx.font = '600 28px "Space Mono", "Kanit", monospace';
+            ctx.font = '600 34px "Space Mono", "Kanit", monospace';
             ctx.fillText('• BYE NIOR 2026 FAREWELL PHOTO BOOTH •', W / 2, curY);
-            curY += 42;
+            curY += 39;
 
             // Exact Event Details from User Prompt
-            ctx.font = '500 24px "Kanit", sans-serif';
+            ctx.font = '500 29px "Kanit", sans-serif';
             ctx.fillText('วันศุกร์ที่ 30 ตุลาคม 2569  |  เวลา 16:00 - 19:00 น.', W / 2, curY);
             curY += 34;
-            ctx.font = '400 23px "Kanit", sans-serif';
+            ctx.font = '400 28px "Kanit", sans-serif';
             ctx.fillText('ณ โถง อาคารพระมิ่งขวัญการศึกษาไทย ชั้น 2', W / 2, curY);
-            curY += 38;
+            curY += 35;
 
             drawLotusDivider(ctx, W / 2, curY);
-            curY += 44;
+            curY += 36;
 
             // 3. Receipt Metadata Bar
             const now = new Date();
@@ -1588,52 +1578,51 @@
             const timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
             const orderStr = `#${String(state.orderNumber).padStart(3, '0')}`;
 
-            ctx.font = '600 25px "Space Mono", "Kanit", monospace';
+            ctx.font = '600 28px "Space Mono", "Kanit", monospace';
             ctx.textAlign = 'left';
             ctx.fillText(`NO: ${orderStr}  •  ${guestName.substring(0, 26)}`, PAD + 28, curY);
             ctx.textAlign = 'right';
             ctx.fillText(`${dateStr} ${timeStr}`, W - PAD - 28, curY);
-            curY += 26;
+            curY += 30;
 
             // 4. HIGH-RES SMOOTH PHOTO STRIP FRAMES (NO GRAINY DOTS!)
-            const frameX = PAD + 24;
             for (let i = 0; i < state.shotCount; i++) {
                 const rawFrame = state.capturedFrames[i] || createDemoFrameCanvas(i);
                 const processedPhoto = processPhotoSmoothStudio(rawFrame, frameW, frameH);
+                const row = Math.floor(i / photoColumns);
+                const column = i % photoColumns;
+                const isSinglePhotoLastRow = state.shotCount % photoColumns === 1 && row === photoRows - 1;
+                const frameX = isSinglePhotoLastRow ? (W - frameW) / 2 : column * frameW;
+                const frameY = curY + row * (frameH + photoGap);
 
-                // Clean sleek photo border
-                ctx.fillStyle = '#111111';
-                ctx.fillRect(frameX - 4, curY - 4, frameW + 8, frameH + 8);
-                ctx.drawImage(processedPhoto, frameX, curY, frameW, frameH);
+                ctx.drawImage(processedPhoto, frameX, frameY, frameW, frameH);
 
                 if (showStickers) {
                     ctx.fillStyle = 'rgba(17, 17, 17, 0.85)';
-                    ctx.fillRect(frameX + 16, curY + 16, 130, 40);
+                    ctx.fillRect(frameX + 12, frameY + 12, 154, 48);
                     ctx.fillStyle = '#ffffff';
-                    ctx.font = 'bold 22px "Space Mono", monospace';
+                    ctx.font = 'bold 26px "Space Mono", monospace';
                     ctx.textAlign = 'center';
-                    ctx.fillText(`SHOT 0${i + 1}`, frameX + 81, curY + 43);
+                    ctx.fillText(`SHOT 0${i + 1}`, frameX + 89, frameY + 45);
                 }
-
-                curY += frameH + photoGap;
             }
 
-            curY += 8;
-            drawThinDashedLine(ctx, curY, W, PAD + 24);
-            curY += 44;
+            curY += photoRows * frameH + (photoRows - 1) * photoGap + 8;
+            drawThinDashedLine(ctx, curY, W, PAD);
+            curY += 32;
 
             // 5. Memory Receipt Checklist
             if (showItems) {
                 ctx.fillStyle = '#111111';
-                ctx.font = 'bold 25px "Space Mono", "Kanit", monospace';
+                ctx.font = 'bold 29px "Space Mono", "Kanit", monospace';
                 ctx.textAlign = 'left';
                 ctx.fillText('ITEM DESCRIPTION', PAD + 28, curY);
                 ctx.textAlign = 'right';
                 ctx.fillText('VALUE', W - PAD - 28, curY);
-                curY += 20;
+                curY += 22;
 
-                drawThinDashedLine(ctx, curY, W, PAD + 24);
-                curY += 42;
+                drawThinDashedLine(ctx, curY, W, PAD);
+                curY += 34;
 
                 const items = [
                     ['01x  งานเลี้ยงอำลา Bye Nior 2026', 'CONFIRMED'],
@@ -1642,43 +1631,43 @@
                     ['∞    ก้าวต่อไปสู่อนาคตที่สดใส', 'FOREVER']
                 ];
 
-                ctx.font = '500 25px "Kanit", "Space Mono", sans-serif';
+                ctx.font = '500 29px "Kanit", "Space Mono", sans-serif';
                 items.forEach(([desc, val]) => {
                     ctx.textAlign = 'left';
                     ctx.fillText(desc, PAD + 28, curY);
                     ctx.textAlign = 'right';
-                    ctx.font = 'bold 24px "Space Mono", monospace';
+                    ctx.font = 'bold 28px "Space Mono", monospace';
                     ctx.fillText(val, W - PAD - 28, curY);
-                    ctx.font = '500 25px "Kanit", "Space Mono", sans-serif';
-                    curY += 46;
+                    ctx.font = '500 29px "Kanit", "Space Mono", sans-serif';
+                    curY += 44;
                 });
 
-                curY += 10;
-                drawThinDashedLine(ctx, curY, W, PAD + 24);
-                curY += 46;
+                curY += 8;
+                drawThinDashedLine(ctx, curY, W, PAD);
+                curY += 34;
             }
 
             // 6. Custom Quote / Farewell Note
             if (customQuote) {
                 ctx.fillStyle = '#111111';
                 ctx.textAlign = 'center';
-                ctx.font = '600 30px "Mali", "Kanit", sans-serif';
-                wrapCanvasText(ctx, `“ ${customQuote} ”`, W / 2, curY + 12, INNER_W - 80, 42);
-                curY += 95;
+                ctx.font = '600 36px "Mali", "Kanit", sans-serif';
+                curY = wrapCanvasText(ctx, `“ ${customQuote} ”`, W / 2, curY + 12, INNER_W - 80, 50) + 15;
             }
 
             // 7. Event Purpose Line + Clean Barcode
+            curY = Math.max(curY, PAGE_HEIGHT - 200);
             ctx.fillStyle = '#333333';
-            ctx.font = '400 21px "Kanit", sans-serif';
+            ctx.font = '400 25px "Kanit", sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('เพื่อเตรียมความพร้อมในการจัดงานเลี้ยงอำลาและส่งต่อความทรงจำดีๆ', W / 2, curY);
-            curY += 34;
+            curY += 40;
 
-            drawReceiptBarcode(ctx, W / 2, curY, 620, 76);
-            curY += 106;
+            drawReceiptBarcode(ctx, W / 2, curY, 720, 88);
+            curY += 116;
 
             ctx.fillStyle = '#111111';
-            ctx.font = 'bold 24px "Space Mono", monospace';
+            ctx.font = 'bold 28px "Space Mono", monospace';
             ctx.fillText('* BYE NIOR 2026 • TEDDY MOVE ON *', W / 2, curY);
 
             // Sync with Print Image
@@ -1742,11 +1731,6 @@
             showToast('คัดลอก Prompt เรียบร้อยแล้ว!', 'success');
         }
 
-        function updatePaperWidth(val) {
-            document.documentElement.style.setProperty('--print-width', val);
-            document.getElementById('dockModeBadge').innerHTML = `<i class="fa-solid fa-gear text-[10px]"></i><span>${state.printer.mode.toUpperCase()} • ${val}</span>`;
-        }
-
         function setOrderNumber(value) {
             const nextNumber = Number(value);
             if (!Number.isSafeInteger(nextNumber) || nextNumber < 1) {
@@ -1777,8 +1761,7 @@
             const activeSec = document.getElementById(`pconfig-${mode}`);
             if (activeSec) activeSec.classList.remove('hidden');
 
-            const widthVal = document.getElementById('paperWidthSelect').value;
-            document.getElementById('dockModeBadge').innerHTML = `<i class="fa-solid fa-gear text-[10px]"></i><span>${mode.toUpperCase()} • ${widthVal}</span>`;
+            document.getElementById('dockModeBadge').innerHTML = `<i class="fa-solid fa-gear text-[10px]"></i><span>${mode.toUpperCase()} • 80 × 210mm</span>`;
         }
 
         function updatePrinterHardwarePrefs() {
@@ -1871,7 +1854,7 @@
         function printTestSlip() {
             const canvas = document.createElement('canvas');
             canvas.width = 1152;
-            canvas.height = 520;
+            canvas.height = 3024;
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1914,7 +1897,6 @@
         }
 
         window.onload = function() {
-            updatePaperWidth('72mm');
             document.getElementById('orderNumberInput').value = state.orderNumber;
             updateDitherControl();
             setPrinterMode(state.printer.mode);

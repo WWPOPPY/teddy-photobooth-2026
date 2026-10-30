@@ -1529,7 +1529,7 @@
 
             const photoGap = 16;
             const frameH = state.shotCount >= 3
-                ? Math.floor((PAGE_HEIGHT - 1050 - (state.shotCount - 1) * photoGap) / state.shotCount)
+                ? Math.floor((PAGE_HEIGHT - 1100 - (state.shotCount - 1) * photoGap) / state.shotCount)
                 : W * 3 / 4;
             const frameW = frameH * 4 / 3;
 
@@ -1547,7 +1547,7 @@
 
             // 1. Poster Graduation Cap & Scroll Emblem: ( 🎓📜 )
             drawPosterHeaderArtwork(ctx, W / 2, curY, state.receiptTheme);
-            curY += 102;
+            curY += 150;
 
             // 2. Main Poster Title: TEDDY MOVE ON
             ctx.fillStyle = '#111111';
